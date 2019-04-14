@@ -1,0 +1,9 @@
+#footer {
+    position:fixed;
+    bottom:0;
+    width:90%; 
+}
+
+#footer p{
+    text-align: center;    
+}
