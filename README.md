@@ -1,6 +1,6 @@
 # Introduction to Software Development - Assignment 1
 
-Group 6
+Group 15
 
 ## How to deploy & run
 
