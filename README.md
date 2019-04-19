@@ -1,6 +1,6 @@
 # Introduction to Software Development - Assignment 1
 
-Group 3
+Group 6
 
 ## How to deploy & run
 
@@ -9,3 +9,4 @@ Group 3
 3. Right click -> Run
 4. Wait until the project opens on your local Glassfish server
  
+(WAR file located at /dist/ISDMovies.war)
