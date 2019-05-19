@@ -15,7 +15,7 @@
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 4rem">Your Order</h1>
             <div style="display: flex">
-                <div class="card" style="width: 50%; margin-right: 4rem">
+                <div style="width: 50%; margin-right: 4rem">
                     <ul class="list-group list-group-flush">
                       <li class="list-group-item" style="display: flex;">
                           <div style="flex-grow: 1">
