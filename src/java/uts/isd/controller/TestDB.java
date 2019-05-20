@@ -15,25 +15,19 @@ public class TestDB {
             Connection connection = connector.openConnection();
             DBManager db = new DBManager(connection);
             
-            int key = (new Random()).nextInt(999999);
-            String id = "" + key;
-//            System.out.print("User email: ");
-//            String email = in.nextLine();
-//            System.out.print("User  dname: ");
-//            String name = in.nextLine();
-//            System.out.print("User password: ");
-//            String password = in.nextLine();
-//            System.out.print("User DOB: ");
-//            String dob = in.nextLine();
-//            System.out.print("User favorite color: ");
-//            String favcol = in.nextLine();
-            //db.addUser(ID, email, name, password, dob, favcol);
-            db.addUser(id, "email", "name", "password", "dob", "favcol");
-            System.out.println("Added new user to database.");
+            testAddUser(db);
+            
             connector.closeConnection();
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(TestDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private static void testAddUser(DBManager db) { // TODO: Do we need to refactor this to non-static?
+        int key = (new Random()).nextInt(999999);
+        String id = "" + key;
+        db.addUser(id, "email", "name", "password", "dob", "favcol");
+        System.out.println("Added new user to database.");
     }
 
 }
