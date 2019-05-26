@@ -8,7 +8,7 @@ span{
     background-color: #f4f4f4;
     margin-bottom: 60px;
 }
-#hometext, #managetext, #managebookstext, #reservetext, #logintext, #registertext, #edittext, #logouttext, #addtext{
+.navbar-texts, #managetext, #managebookstext, #reservetext, #logintext, #registertext, #edittext, #logouttext, #addtext{
     font-family: Arial, Helvetica, sans-serif;
     font-size: medium;
 }
@@ -16,7 +16,7 @@ span{
 {
     background-color: black;
 }
-#home .home #hometext, #manage .manage #managetext, #managebooks .managebooks #managebookstext, #reserve .reserve #reservetext, #login .login #logintext, 
+#home .home .navbar-texts, #manage .manage #managetext, #managebooks .managebooks #managebookstext, #reserve .reserve #reservetext, #login .login #logintext, 
 #register .register #registertext, #edit .edit #edittext ,#logout .logout #logouttext, #add .add #addtext
 {
     color: white;
