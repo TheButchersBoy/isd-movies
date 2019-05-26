@@ -36,6 +36,16 @@
                     </a>
                 </li>
             <%} else {%>
+                <li class="orderhistory">
+                    <a id="orderhistorytext" href="order-history.jsp">
+                        <span class="glyphicon glyphicon-list"> OrderHistory</span>
+                    </a>
+                </li>
+                <li class="order">
+                    <a id="ordertext" href="order.jsp">
+                        <span class="glyphicon glyphicon-shopping-cart"> Cart</span>
+                    </a>
+                </li>
                 <li>
                     <a href="userDetails.jsp">
                         <span class="glyphicon glyphicon-user"></span>

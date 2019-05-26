@@ -15,6 +15,7 @@ import uts.isd.model.dao.*;
 public class ConnServlet extends HttpServlet {
     private DBConnector db;
     private DBManager manager;
+    private OrderDBManager orderDBManager;
     private Connection conn;
 
     @Override //Create and instance of DBConnector for the deployment session
@@ -37,6 +38,13 @@ public class ConnServlet extends HttpServlet {
         session.setAttribute("db", db);
         session.setAttribute("manager", manager);
         session.setAttribute("conn", conn);
+        
+        try {
+            orderDBManager = new OrderDBManager(conn);
+            session.setAttribute("orderDBManager", orderDBManager);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     } 
 
     @Override //Destroy the servlet and release the resources of the application
