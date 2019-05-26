@@ -5,7 +5,7 @@
         <div class="container">
             <h1>Login</h1>
             <br />
-            <form action="login_action.jsp" method="POST">      
+            <form action="loginAction.jsp" method="post">      
                 <div class="form-group">        
                     <table class="table" style="width:35%;">
                         <tr>

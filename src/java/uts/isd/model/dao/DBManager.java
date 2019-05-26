@@ -1,5 +1,6 @@
 package uts.isd.model.dao;
 
+import uts.isd.model.User;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
@@ -9,8 +10,8 @@ public class DBManager {
     private Statement st;
     private Connection conn;
     
-    public DBManager(Connection conn) {
-        this.conn = conn;
+    public DBManager(Connection conn) throws SQLException {
+        st = conn.createStatement();
     }
     
     public void addUser(String id, String email, String password, 
@@ -34,6 +35,34 @@ public class DBManager {
         } finally{
             closeConnection();
         }
+    }
+    
+    //Find User
+    public User findUser(String email, String password) throws SQLException {
+        String searchQueryString = "select * from Users where email='" + email + "'AND password='" + password + "'";
+        ResultSet rs = st.executeQuery(searchQueryString);
+        boolean hasUser = rs.next();
+        User userFromDB = null;
+        
+        if(hasUser) {
+            String sID = rs.getString("id");
+            String sPassword = rs.getString("password");
+            String sEmail = rs.getString("email");
+            String sFirstName = rs.getString("firstName");
+            String sLastName = rs.getString("lastName");
+            String sDOB = rs.getString("dob");
+            
+            userFromDB = new User (sID, sPassword, sEmail, sFirstName, sLastName, sDOB);
+        }
+    rs.close();
+    return userFromDB;
+    }
+    
+    public boolean checkUser (String email, String password) throws SQLException {
+        String searchQueryString = "select * from Users where email='" + email + "'AND password='" + password + "'";
+        ResultSet rs = st.executeQuery(searchQueryString);
+        boolean hasUser = rs.next();
+        return hasUser;
     }
     
     private void closeConnection() {
