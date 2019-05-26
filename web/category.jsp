@@ -5,11 +5,12 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="navbar.jsp" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Category</title>
     </head>
     <body>
         <div class="">
@@ -44,35 +45,7 @@
          </ul>
      </div>
  </div>
- <div class="">
-     <div class="filter country">
-         <div class="heading"> Country </div>
-         <ul class="checkbox c2">
-             <li><input name="country[]" type="checkbox" id="country_united-kingdom" value="1"><label for="country_united-kingdom">United Kingdom</label></li>
-             <li><input name="country[]" type="checkbox" id="country_united-states" value="2"><label for="country_united-states">United States</label></li>
-             <li><input name="country[]" type="checkbox" id="country_international" value="3"><label for="country_international">International</label></li>
-             <li><input name="country[]" type="checkbox" id="country_korea" value="4"><label for="country_korea">Korea</label></li>
-             <li><input name="country[]" type="checkbox" id="country_france" value="5"><label for="country_france">France</label></li>
-             <li><input name="country[]" type="checkbox" id="country_euro" value="6"><label for="country_euro">Euro</label></li>
-             <li><input name="country[]" type="checkbox" id="country_china" value="7"><label for="country_china">China</label></li>
-             <li><input name="country[]" type="checkbox" id="country_hongkong" value="8"><label for="country_hongkong">HongKong</label></li>
-             <li><input name="country[]" type="checkbox" id="country_india" value="9"><label for="country_india">India</label></li>
-             <li><input name="country[]" type="checkbox" id="country_japan" value="10"><label for="country_japan">Japan</label></li>
-             <li><input name="country[]" type="checkbox" id="country_asia" value="11"><label for="country_asia">Asia</label></li>
-             <li><input name="country[]" type="checkbox" id="country_thailand" value="12"><label for="country_thailand">Thailand</label></li>
-             <li><input name="country[]" type="checkbox" id="country_taiwan" value="13"><label for="country_taiwan">Taiwan</label></li>
-         </ul>
-     </div>
- </div>
- <div class="">
-     <div class="filter type">
-         <div class="heading"> Type </div>
-         <ul class="checkbox c1">
-             <li><input name="type[]" id="type_movie" type="checkbox" value="1"><label for="type_movie">Movies</label></li>
-             <li><input name="type[]" id="type_series" type="checkbox" value="2"><label for="type_series">Series</label></li>
-         </ul>
-     </div>
- </div>
+
  <div class="">
      <div class="filter quality">
          <div class="heading"> Release </div>
