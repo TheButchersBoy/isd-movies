@@ -76,7 +76,7 @@ public class OrderDBManager {
     
     public ArrayList<Order> getOrders() throws SQLException {
         // TODO: get orders by user id
-        String ordersSql = "SELECT * FROM ORDERS";
+        String ordersSql = "SELECT * FROM ORDERS ORDER BY DATE DESC";
         PreparedStatement getOrders = conn.prepareStatement(ordersSql);
         
         ArrayList<Order> orders = new ArrayList<Order>();

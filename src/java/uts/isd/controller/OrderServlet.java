@@ -61,17 +61,8 @@ public class OrderServlet extends HttpServlet {
         }
         
         try {
-            ArrayList<Order> orders = manager.getOrders();
-            String orderIdFilter = request.getParameter("orderId");
-            
-            if (orderIdFilter != null) {
-                orders.removeIf(order -> !order.getId().equals(orderIdFilter));
-            }
-            
-            // TODO: Filter by dateFrom and dateTo
-            
-            session.setAttribute("orders", orders);
-        } catch (SQLException ex) {
+            getOrders(request);
+        } catch (Exception ex) {
             Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -81,8 +72,6 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
         
         String action= request.getParameter("action");
-        
-        System.out.println("ACTION " + action);
         
         try {
             if ("Submit".equals(action)) {
@@ -137,5 +126,31 @@ public class OrderServlet extends HttpServlet {
         session.setAttribute("order", order);
         
         response.sendRedirect("order.jsp");
+    }
+    
+    private void getOrders(HttpServletRequest request) throws SQLException, ParseException {
+        HttpSession session = request.getSession();
+        
+        ArrayList<Order> orders = manager.getOrders();
+        String orderIdFilter = request.getParameter("orderId");
+        String dateFromFilter = request.getParameter("dateFrom");
+        String dateToFilter = request.getParameter("dateTo");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (orderIdFilter != null && !orderIdFilter.isEmpty()) {
+            orders.removeIf(order -> !order.getId().equals(orderIdFilter));
+        }
+
+        if (dateFromFilter != null && !dateFromFilter.isEmpty()) {
+            Date dateFrom = dateFormat.parse(dateFromFilter);
+            orders.removeIf(order -> order.getDate().before(dateFrom));
+        }
+
+        if (dateToFilter != null && !dateToFilter.isEmpty()) {
+            Date dateTo = dateFormat.parse(dateToFilter);
+            orders.removeIf(order -> order.getDate().after(dateTo));
+        }
+
+        session.setAttribute("orders", orders);
     }
 }
