@@ -20,6 +20,16 @@
             </li>   
         </ul>
         <ul class="nav navbar-nav navbar-right">
+            <li class="orderhistory">
+                <a id="orderhistorytext" href="order-history.jsp">
+                    <span class="glyphicon glyphicon-list"> OrderHistory</span>
+                </a>
+            </li>
+            <li class="order">
+                <a id="ordertext" href="order.jsp">
+                    <span class="glyphicon glyphicon-shopping-cart"> Cart</span>
+                </a>
+            </li>
             <li class="register">
                 <a id="registertext" href="register.jsp">
                     <span class="glyphicon glyphicon-user"> Register</span>
