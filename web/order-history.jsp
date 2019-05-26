@@ -4,8 +4,11 @@
     Author     : jessicawiradinata
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="uts.isd.model.dao.*"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="uts.isd.model.*"%>
 <%@include file="navbar.jsp" %>
+<c:import url="/ConnServlet" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,6 +16,11 @@
         <title>Order History</title>
     </head>
     <body>
+        <%    
+            OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
+            ArrayList<Order> orders = orderDBManager.getOrders();
+            System.out.print(orders);
+        %>
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 3rem">Order History</h1>
             <h3 style="margin-bottom: 2rem">Search</h3>
@@ -37,33 +45,30 @@
             </div>
             <div style="width: 50%">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" style="display: flex;">
-                        <div style="flex-grow: 1">
-                            <h4>Order #123456789</h4>
-                            <p style="margin-bottom: 0">10/10/2018</p>
-                        </div>
-                        <div style="display: flex; align-items: center">
-                            <p><b>$61.50</b></p>
-                        </div>
-                    </li>
-                    <li class="list-group-item" style="display: flex;">
-                        <div style="flex-grow: 1">
-                            <h4>Order #123456789</h4>
-                            <p style="margin-bottom: 0">10/10/2018</p>
-                        </div>
-                        <div style="display: flex; align-items: center">
-                            <p><b>$61.50</b></p>
-                        </div>
-                    </li>
-                    <li class="list-group-item" style="display: flex;">
-                        <div style="flex-grow: 1">
-                            <h4>Order #123456789</h4>
-                            <p style="margin-bottom: 0">10/10/2018</p>
-                        </div>
-                        <div style="display: flex; align-items: center">
-                            <p><b>$61.50</b></p>
-                        </div>
-                    </li>
+                    <c:forEach items="<%= orders %>" var="order">
+                        <%
+                            Order order = (Order)pageContext.getAttribute("order");
+                        %>
+                        <li class="list-group-item" style="display: flex; flex-direction: column">
+                            <div style="display: flex;">
+                                <h4 style="flex-grow: 1">Order #<%= order.getId() %></h4>
+                                <h4>$<%= String.format("%.2f", order.getTotalPrice()) %></h4>
+                            </div>
+                            <p><%= order.getDate() %></p>
+                            <div style="display: flex; flex-direction: column">
+                                <p style="margin-bottom: 0"><b>Movies:</b></p>
+                                <c:forEach items="<%= order.getMovies() %>" var="movie">
+                                    <%
+                                        Movie movie = (Movie)pageContext.getAttribute("movie");
+                                    %>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <p style="margin-bottom: 0"><%= movie.getTitle() %></p>
+                                        <p style="margin-bottom: 0">$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </li>
+                    </c:forEach>
                 </ul>
             </div>
         </div>

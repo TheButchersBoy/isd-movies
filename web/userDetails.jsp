@@ -1,23 +1,37 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <link rel="stylesheet" type="text/css" href="styles/styles.css"/>
 <%
-    String firstName = ""; //(String) session.getAttribute("firstName");
-    String lastName = ""; //(String) session.getAttribute("lastName");
-    String email = ""; //(String) session.getAttribute("email");
-    String mobile = ""; //(String) session.getAttribute("mobileError");
-    
     String firstNameError = (String) session.getAttribute("firstNameError");
     String lastNameError = (String) session.getAttribute("lastNameError");
     String emailError = (String) session.getAttribute("emailError");
-    String passwordError = (String) session.getAttribute("passwordError");
     String mobileError = (String) session.getAttribute("mobileError");
+    
+    String showUpdateBanner = (String) session.getAttribute("showUpdateBanner");
+
+    User userDetails = (User) session.getAttribute("user");
+    String firstName = "";
+    String lastName = "";
+    String email = "";
+    String mobile = "";
+    if (userDetails != null) {
+        firstName = userDetails.getFirstName();
+        lastName = userDetails.getLastName();
+        email = userDetails.getEmail();
+        mobile = userDetails.getMobile();
+    }
 %>
 <%@include file="navbar.jsp" %>
 <html>
     <body id="register">            
         <div class="container">
-            <h1>Register</h1>
-            <br />
+            <h1>User Details</h1>
+            <%if (showUpdateBanner != null) {%>
+                <div class="alert alert-success" role="alert">
+                    Successfully updated
+                </div>
+            <%} else {%>
+                <br />
+            <%}%>
             <form action="UserServlet" method="post">        
                 <div class="form-group">              
                     <!--TODO: Refactor table styling-->
@@ -53,16 +67,6 @@
                             </tr>
                         <%}%>
                         <tr>
-                            <td><label for="password">Password</td>                
-                            <td><input type="password" class="form-control" name="password"/></td>
-                        </tr>
-                        <%if (passwordError != null) {%>
-                            <tr>
-                                <td></td>
-                                <td><p class="red"><%=passwordError%></p><td>
-                            </tr>
-                        <%}%>
-                        <tr>
                             <td><label for="mobile">Mobile</td>                
                             <td><input type="text" class="form-control" name="mobile" value="<%=mobile%>"/></td>                
                         </tr>
@@ -74,14 +78,21 @@
                         <%}%>
                         <tr>
                             <td></td>
-                            <td align="right">
-                                <input type="submit" class="btn btn-default" name="action" value="register"/>
+                            <td>
+                                <input type="submit" class="btn btn-primary" name="action" value="update"/>
                             </td>
                         </tr>
                     </table>
+                    
                 </div>
-            </form> 
+            </form>
+            <!--TODO: Add onClick() functionality with "Are you sure?" alert-->
+            <input class="btn btn-danger" name="submitBtn" value="Delete account"/>
         </div>
     </body>
     <%@include file="footer.jsp" %>
+    <%
+        // Reset banner
+        session.setAttribute("showUpdateBanner", null);
+    %>
 </html>
