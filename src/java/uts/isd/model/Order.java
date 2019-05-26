@@ -17,7 +17,7 @@ public class Order {
     private String id;
     private String userId;
     private ArrayList<Movie> movies;
-    private Double totalPrice;
+    private Double totalPrice = 0.0;
     private Date date;
     
     public Order() {}
@@ -68,5 +68,19 @@ public class Order {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+    
+    public void removeMovie(String movieId) {
+        movies.removeIf(movie -> movie.getId().equals(movieId));
+    }
+    
+    public void updateTotalPrice() {
+        Double price = 0.0;
+        
+        for (Movie movie: movies) {
+            price += movie.getPrice();
+        }
+        
+        totalPrice = price;
     }
 }

@@ -8,7 +8,7 @@
 <%@page import="uts.isd.model.dao.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" import="uts.isd.model.*"%>
 <%@include file="navbar.jsp" %>
-<c:import url="/ConnServlet" />
+<c:import url="/OrderServlet" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,31 +16,25 @@
         <title>Order History</title>
     </head>
     <body>
-        <%    
-            OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
-            ArrayList<Order> orders = orderDBManager.getOrders();
-            System.out.print(orders);
-        %>
-        <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
+        <%  ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders"); %>
+        <form action="orderHistory.jsp" method="get" style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 3rem">Order History</h1>
             <h3 style="margin-bottom: 2rem">Search</h3>
             <div style="display: flex; margin-bottom: 6rem">
                 <div style="margin-right: 2rem">
-                    <label>Order number</label>
-                    <input type="text" class="form-control" placeholder="eg. 123456789">
+                    <label>Order ID</label>
+                    <input type="text" class="form-control" name="orderId" placeholder="eg. 123456789">
                 </div>
                 <div style="margin-right: 2rem">
                     <label>Order date (from)</label>
-                    <input type="date" class="form-control" placeholder="dd/MM/yyyy">
+                    <input type="date" class="form-control" name="dateFrom" placeholder="dd/MM/yyyy">
                 </div>
                 <div style="margin-right: 2rem">
                     <label>Order date (to)</label>
-                    <input type="date" class="form-control" placeholder="dd/MM/yyyy">
+                    <input type="date" class="form-control" name="dateTo" placeholder="dd/MM/yyyy">
                 </div>
                 <div style="display: flex; align-items: flex-end">
-                    <button type="button" class="btn btn-primary">
-                        Search
-                    </button>
+                    <input type="submit" class="btn btn-primary" name="action" value="Search">
                 </div>
             </div>
             <div style="width: 50%">
@@ -71,6 +65,6 @@
                     </c:forEach>
                 </ul>
             </div>
-        </div>
+        </form>
     </body>
 </html>
