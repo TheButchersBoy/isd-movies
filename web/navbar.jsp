@@ -20,6 +20,11 @@
             </li>   
         </ul>
         <ul class="nav navbar-nav navbar-right">
+            <li class="payment">
+                <a id="paymenttext" href="payment-details.jsp">
+                    <span class="glyphicon glyphicon-user"> Payment</span>
+                </a>
+            </li>
             <li class="register">
                 <a id="registertext" href="register.jsp">
                     <span class="glyphicon glyphicon-user"> Register</span>
