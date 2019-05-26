@@ -13,8 +13,8 @@
         <title>Category</title>
     </head>
     <body>
-        <div class="">
-     <div class="filter genre">
+        <div class="col-lg-8">
+     <div class="filter genre" style="float: left; line-height: 25px;">
          <div class="heading"> Category </div>
          <ul class="checkbox c3">
              <li><input name="genre[]" type="checkbox" id="genre_crime" value="1"><label for="genre_crime">Crime</label></li>
@@ -37,16 +37,12 @@
              <li><input name="genre[]" type="checkbox" id="genre_musical" value="19"><label for="genre_musical">Musical</label></li>
              <li><input name="genre[]" type="checkbox" id="genre_sport" value="20"><label for="genre_sport">Sport</label></li>
              <li><input name="genre[]" type="checkbox" id="genre_tv-show" value="21"><label for="genre_tv-show">TV Show</label></li>
-             <li><input name="genre[]" type="checkbox" id="genre_sitcom" value="22"><label for="genre_sitcom">Sitcom</label></li>
-             <li><input name="genre[]" type="checkbox" id="genre_costume" value="23"><label for="genre_costume">Costume</label></li>
-             <li><input name="genre[]" type="checkbox" id="genre_psychological" value="24"><label for="genre_psychological">Psychological</label></li>
-             <li><input name="genre[]" type="checkbox" id="genre_kungfu" value="25"><label for="genre_kungfu">Kungfu</label></li>
-             <li><input name="genre[]" type="checkbox" id="genre_mythological" value="26"><label for="genre_mythological">Mythological</label></li>
+           
          </ul>
      </div>
  </div>
 
- <div class="">
+ <div class="col-lg-3">
      <div class="filter quality">
          <div class="heading"> Release </div>
          <ul class="checkbox c1">
@@ -60,6 +56,8 @@
          </ul>
      </div>
  </div>
+<div class="submit"> <button class="btn btn-primary" type="submit">Search Movies</button> </div>
 
+<input type="submit" class="btn btn-default" name="submitBtn" value="Search Movies"/>
     </body>
 </html>
