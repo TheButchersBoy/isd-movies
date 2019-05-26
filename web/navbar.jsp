@@ -13,7 +13,7 @@
         </div>
         <ul class="nav navbar-nav">                 
             <li class="categories">
-                <a id="hometext" href="index.jsp">Categories</a>
+                <a id="hometext" href="category.jsp">Categories</a>
             </li>   
             <li class="search">
                 <a id="hometext" href="index.jsp">&#x1F50D;</a>
