@@ -16,9 +16,10 @@
     
     <body>
         <h1> 
-            <% String firstName = request.getParameter("firstName");%>
-            Welcome Back, <% out.println(firstName); %> 
+            <% User currentUser = (User)session.getAttribute("currentSessionUser"); %>
+            Welcome Back, <%= currentUser.getFirstName() + " " + currentUser.getLastName() %>
         </h1>
+        
         <button class="button" type="button" onclick="location.href = 'index.jsp'" > Main Page </button>
         <button class="button" type="button" onclick="location.href = 'userProfile.jsp'" > Profile Page </button>
     </body>

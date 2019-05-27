@@ -29,7 +29,7 @@ public class UserDAO {
         
         try{
            //Connect to DB
-           currentCon = DBConnector.openConnection();
+           currentCon = DBConnector.getConnection();
            statement = currentCon.createStatement();
            rs = statement.executeQuery(sql);
            boolean more = rs.next();
@@ -43,8 +43,8 @@ public class UserDAO {
          //if user exists set the isValid variable to true
          else if (more) 
          {
-            String firstName = rs.getString("FirstName");
-            String lastName = rs.getString("LastName");
+            String firstName = rs.getString("firstName");
+            String lastName = rs.getString("lastName");
 	     	
             System.out.println("Welcome " + firstName);
             user.setFirstName(firstName);
