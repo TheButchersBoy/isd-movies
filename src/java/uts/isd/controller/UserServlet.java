@@ -2,7 +2,11 @@ package uts.isd.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,18 +15,56 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import uts.isd.Validator;
 import uts.isd.model.User;
+import uts.isd.model.dao.DBConnector;
+import uts.isd.model.dao.DBManager;
 
 public class UserServlet extends HttpServlet {
+    
+    private DBConnector db;
+    private DBManager manager;
+    private Connection conn;
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // do something
+    @Override //Create and instance of DBConnector for the deployment session
+    public void init() {
+        try {
+            db = new DBConnector();
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+    
+    @Override //Add the DBConnector, DBManager, Connection instances to the session
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");       
+        HttpSession session = request.getSession();
+        conn = db.openConnection();   
+        try {
+            //TODO: don't need try catch yet
+            manager = new DBManager(conn);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.setAttribute("db", db);
+        session.setAttribute("manager", manager);
+        session.setAttribute("conn", conn);
+    } 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException{
+        response.setContentType("text/html;charset=UTF-8");       
+        HttpSession session = request.getSession();
+        conn = db.openConnection();   
+        try {
+            //TODO: don't need try catch yet
+            manager = new DBManager(conn);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.setAttribute("db", db);
+        session.setAttribute("manager", manager);
+        session.setAttribute("conn", conn);
         
         String action= request.getParameter("action");
         // TOOD: Add try-catch here?
@@ -30,9 +72,31 @@ public class UserServlet extends HttpServlet {
             registerUser(request, response);
         } else if("update".equals(action)) {
             updateUserDetails(request, response);
-        }
+//        } else if ("login".equals(action)) {
+//                login(request, response);          
+//        } 
     }
     
+//    private void login(HttpServletRequest request, HttpServletResponse response) 
+//            throws ServletException, IOException, SQLException {
+//        
+//        HttpSession session = request.getSession();
+//        String email = request.getParameter("email");
+//        String password = request.getParameter("password");
+//        User user = manager.findUser(email, password);
+//        
+//        if (manager != null && manager.checkUser(email, password)){
+//            session.setAttribute("userLogin", user);
+//            RequestDispatcher rd=request.getRequestDispatcher("loginWelcome.jsp");  
+//        rd.forward(request,response); 
+//        }
+//        else {
+//            session.setAttribute("existErr", "User profile does not exist!");
+//            RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
+//        rd.forward(request,response); 
+//        }
+    }
+
     private void registerUser(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         

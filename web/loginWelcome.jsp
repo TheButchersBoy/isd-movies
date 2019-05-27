@@ -5,6 +5,8 @@
 --%>
 <%@page import="uts.isd.model.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page language="java"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,12 +14,13 @@
         <title>Login Welcome Page!</title>
     </head>
     
-    <%
-        User user = (User)session.getAttribute("userLogin");
-    %>
     <body>
-        <h1>Welcome Back,</h1>
+        <h1> 
+            <% String firstName = request.getParameter("firstName");%>
+            Welcome Back, <% out.println(firstName); %> 
+        </h1>
         <button class="button" type="button" onclick="location.href = 'index.jsp'" > Main Page </button>
         <button class="button" type="button" onclick="location.href = 'userProfile.jsp'" > Profile Page </button>
     </body>
+    
 </html>

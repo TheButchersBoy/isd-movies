@@ -10,6 +10,7 @@ public class User implements Serializable{ // TODO: Do we need to implement Seri
     private String email;
     private String password;
     private String mobile;
+    public boolean valid;
     
     public User() {
         super();
@@ -88,4 +89,12 @@ public class User implements Serializable{ // TODO: Do we need to implement Seri
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+    
+    public boolean isValid() {
+         return valid;
+	}
+
+      public void setValid(boolean newValid) {
+         valid = newValid;
+	}
 }
