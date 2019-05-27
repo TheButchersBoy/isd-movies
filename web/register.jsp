@@ -1,11 +1,24 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <link rel="stylesheet" type="text/css" href="styles/styles.css"/>
 <%
-    String firstName = ""; //(String) session.getAttribute("firstName");
-    String lastName = ""; //(String) session.getAttribute("lastName");
-    String email = ""; //(String) session.getAttribute("email");
-    String mobile = ""; //(String) session.getAttribute("mobileError");
-    
+    // Set form entries from session
+    String firstName = (String) session.getAttribute("firstNameFormVal");
+    String lastName = (String) session.getAttribute("lastNameFormVal");
+    String email = (String) session.getAttribute("emailFormVal");
+    String mobile = (String) session.getAttribute("mobileFormVal");
+    if (firstName == null){
+        firstName = "";
+    }
+    if (lastName == null){
+        lastName = "";
+    }
+    if (email == null){
+        email = "";
+    }
+    if (mobile == null){
+        mobile = "";
+    }
+    // Set from errors from session
     String firstNameError = (String) session.getAttribute("firstNameError");
     String lastNameError = (String) session.getAttribute("lastNameError");
     String emailError = (String) session.getAttribute("emailError");
@@ -29,7 +42,7 @@
                         <%if (firstNameError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=firstNameError%></p><td>
+                                <td><p class="error-text"><%=firstNameError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
@@ -39,7 +52,7 @@
                         <%if (lastNameError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=lastNameError%></p><td>
+                                <td><p class="error-text"><%=lastNameError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
@@ -49,7 +62,7 @@
                         <%if (emailError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=emailError%></p><td>
+                                <td><p class="error-text"><%=emailError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
@@ -59,7 +72,7 @@
                         <%if (passwordError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=passwordError%></p><td>
+                                <td><p class="error-text"><%=passwordError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
@@ -69,7 +82,7 @@
                         <%if (mobileError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=mobileError%></p><td>
+                                <td><p class="error-text"><%=mobileError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
@@ -84,4 +97,17 @@
         </div>
     </body>
     <%@include file="footer.jsp" %>
+    <%
+        // Reset form entries and errors
+        session.setAttribute("firstNameFormVal", null);
+        session.setAttribute("lastNameFormVal", null);
+        session.setAttribute("emailFormVal", null);
+        session.setAttribute("mobileFormVal", null);
+        
+        session.setAttribute("firstNameError", null);
+        session.setAttribute("lastNameError", null);
+        session.setAttribute("emailError", null);
+        session.setAttribute("passwordError", null);
+        session.setAttribute("mobileError", null);
+    %>
 </html>

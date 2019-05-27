@@ -1,24 +1,18 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <link rel="stylesheet" type="text/css" href="styles/styles.css"/>
 <%
+    User userDetails = (User) session.getAttribute("user");
+    String firstName = userDetails.getFirstName();
+    String lastName = userDetails.getLastName();
+    String email = userDetails.getEmail();
+    String mobile = userDetails.getMobile();
+    
     String firstNameError = (String) session.getAttribute("firstNameError");
     String lastNameError = (String) session.getAttribute("lastNameError");
     String emailError = (String) session.getAttribute("emailError");
     String mobileError = (String) session.getAttribute("mobileError");
     
     String showUpdateBanner = (String) session.getAttribute("showUpdateBanner");
-
-    User userDetails = (User) session.getAttribute("user");
-    String firstName = "";
-    String lastName = "";
-    String email = "";
-    String mobile = "";
-    if (userDetails != null) {
-        firstName = userDetails.getFirstName();
-        lastName = userDetails.getLastName();
-        email = userDetails.getEmail();
-        mobile = userDetails.getMobile();
-    }
 %>
 <%@include file="navbar.jsp" %>
 <html>
