@@ -42,7 +42,7 @@
                     </a>
                 </li>
                 <li class="orderhistory">
-                    <a id="orderhistorytext" href="order-history.jsp">
+                    <a id="orderhistorytext" href="orderHistory.jsp">
                         <span class="glyphicon glyphicon-list"> OrderHistory</span>
                     </a>
                 </li>
