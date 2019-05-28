@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="styles/navBar.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <%
-    User userNav = (User) session.getAttribute("user");
+    User userNav = (User) session.getAttribute("currentSessionUser");
 %>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -38,12 +38,17 @@
             <%} else {%>
                 <li>
                     <a href="userDetails.jsp">
-                        <span class="glyphicon glyphicon-user"></span>
+                        <span class="glyphicon glyphicon-user">UserDetails</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="userProfile.jsp">
+                        <span class="glyphicon glyphicon-list-alt">UserProfile</span>
                     </a>
                 </li>
                  <li>
-                    <a >
-                        <span class="glyphicon glyphicon-log-out"></span>
+                    <a href="logout.jsp">
+                        <span class="glyphicon glyphicon-log-out">Logout</span>
                     </a>
                 </li>
             <%}%>
