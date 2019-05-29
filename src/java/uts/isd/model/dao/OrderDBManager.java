@@ -73,13 +73,22 @@ public class OrderDBManager {
             
             addOrderMovie.executeUpdate();
             
-            String updateMovieStockSql = "UPDATE OMSADMIN.MOVIES SET STOCK = STOCK - 1 WHERE ID = ?";
+            String updateMovieStockSql = "UPDATE MOVIES SET STOCK = STOCK - 1 WHERE ID = ?";
             PreparedStatement updateMovieStock = conn.prepareStatement(updateMovieStockSql);
             
             updateMovieStock.setString(1, movie.getId());
             
             updateMovieStock.executeUpdate();
         }
+    }
+    
+    public void cancelOrder(String orderId) throws SQLException {
+        String cancelOrderSql = "UPDATE ORDERS SET STATUS = 'Cancelled' WHERE ID = ?";
+        PreparedStatement cancelOrder = conn.prepareStatement(cancelOrderSql);
+        
+        cancelOrder.setString(1, orderId);
+        
+        cancelOrder.executeUpdate();
     }
     
     public ArrayList<Order> getOrders() throws SQLException {

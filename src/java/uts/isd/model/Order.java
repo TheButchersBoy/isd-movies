@@ -93,4 +93,8 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    public boolean isCancelled() {
+        return this.status.equals("Cancelled");
+    }
 }
