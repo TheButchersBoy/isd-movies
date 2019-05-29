@@ -36,8 +36,8 @@
                     <!--TODO: Refactor table styling-->
                     <table class="table" style="width:50%">
                         <tr>
-                            <td><label for="firstName">First Name:</td>                
-                            <td><input type="text" class="form-control" name="firstName" value="<%=firstName%>"/></td>
+                            <td><label for="firstName">First name</td>                
+                            <td><input type="text" class="form-control" name="firstName" maxlength="49" value="<%=firstName%>"/></td>
                         </tr>
                         <%if (firstNameError != null) {%>
                             <tr>
@@ -46,8 +46,8 @@
                             </tr>
                         <%}%>
                         <tr>
-                            <td><label for="lastName">Last Name:</td>                
-                            <td><input type="text" class="form-control" name="lastName" value="<%=lastName%>"/></td>
+                            <td><label for="lastName">Last name</td>                
+                            <td><input type="text" class="form-control" name="lastName" maxlength="49" value="<%=lastName%>"/></td>
                         </tr>
                         <%if (lastNameError != null) {%>
                             <tr>
@@ -57,7 +57,7 @@
                         <%}%>
                         <tr>
                             <td><label for="email">Email</td>                
-                            <td><input type="text" class="form-control" name="email" value="<%=email%>"/></td>
+                            <td><input type="text" class="form-control" name="email" maxlength="49" value="<%=email%>"/></td>
                         </tr>
                         <%if (emailError != null) {%>
                             <tr>
@@ -67,7 +67,7 @@
                         <%}%>
                         <tr>
                             <td><label for="password">Password</td>                
-                            <td><input type="password" class="form-control" name="password"/></td>
+                            <td><input type="password" class="form-control" maxlength="49" name="password"/></td>
                         </tr>
                         <%if (passwordError != null) {%>
                             <tr>
@@ -77,7 +77,7 @@
                         <%}%>
                         <tr>
                             <td><label for="mobile">Mobile</td>                
-                            <td><input type="text" class="form-control" name="mobile" value="<%=mobile%>"/></td>                
+                            <td><input type="text" class="form-control" name="mobile" maxlength="15" value="<%=mobile%>"/></td>                
                         </tr>
                         <%if (mobileError != null) {%>
                             <tr>
