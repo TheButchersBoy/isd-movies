@@ -19,15 +19,17 @@ public class Order {
     private ArrayList<Movie> movies;
     private Double totalPrice = 0.0;
     private Date date;
+    private String status;
     
     public Order() {}
 
-    public Order(String id, String userId, ArrayList<Movie> movies, Double totalPrice, Date date) {
+    public Order(String id, String userId, ArrayList<Movie> movies, Double totalPrice, Date date, String status) {
         this.id = id;
         this.userId = userId;
         this.movies = movies;
         this.totalPrice = totalPrice;
         this.date = date;
+        this.status = status;
     }
 
     public String getId() {
@@ -82,5 +84,13 @@ public class Order {
         }
         
         totalPrice = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

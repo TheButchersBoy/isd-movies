@@ -52,7 +52,10 @@
                                 <h4 style="flex-grow: 1">Order #<%= order.getId() %></h4>
                                 <h4>$<%= String.format("%.2f", order.getTotalPrice()) %></h4>
                             </div>
-                            <p><%= order.getDate() %></p>
+                            <div style="display: flex; margin-bottom: 1rem">
+                                <p style="flex-grow: 1"><%= order.getDate() %></p>
+                                <p><%= order.getStatus() %></p>
+                            </div>
                             <div style="display: flex; flex-direction: column">
                                 <p style="margin-bottom: 0"><b>Movies:</b></p>
                                 <c:forEach items="<%= order.getMovies() %>" var="movie">

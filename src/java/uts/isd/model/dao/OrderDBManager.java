@@ -32,8 +32,8 @@ public class OrderDBManager {
         // Mock
         Order order = new Order();
         ArrayList<Movie> movies = new ArrayList();
-        movies.add(new Movie("1001", "The Avengers", "", 40.55));
-        movies.add(new Movie("1002", "Antman", "", 20.0));
+        movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
+        movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
         order.setMovies(movies);
         order.setTotalPrice(60.55);
         order.setUserId("987654321");
@@ -50,7 +50,7 @@ public class OrderDBManager {
     }
     
     public void addOrder(String userId, ArrayList<Movie> movies, Double totalPrice) throws SQLException {
-        String insertOrderSql = "INSERT INTO ORDERS(ID, USERID, TOTALPRICE, DATE) " + "VALUES (?,?,?,?)";
+        String insertOrderSql = "INSERT INTO ORDERS(ID, USERID, TOTALPRICE, DATE, STATUS) " + "VALUES (?,?,?,?,?)";
         PreparedStatement addOrder = conn.prepareStatement(insertOrderSql);
         
         int idInt = (new Random()).nextInt(999999);
@@ -60,6 +60,7 @@ public class OrderDBManager {
         addOrder.setString(2, userId);
         addOrder.setDouble(3, totalPrice);
         addOrder.setDate(4, new java.sql.Date(new Date().getTime()));
+        addOrder.setString(5, "Submitted");
         
         addOrder.executeUpdate();
         
@@ -71,6 +72,13 @@ public class OrderDBManager {
             addOrderMovie.setString(2, movie.getId());
             
             addOrderMovie.executeUpdate();
+            
+            String updateMovieStockSql = "UPDATE OMSADMIN.MOVIES SET STOCK = STOCK - 1 WHERE ID = ?";
+            PreparedStatement updateMovieStock = conn.prepareStatement(updateMovieStockSql);
+            
+            updateMovieStock.setString(1, movie.getId());
+            
+            updateMovieStock.executeUpdate();
         }
     }
     
@@ -89,6 +97,7 @@ public class OrderDBManager {
             order.setUserId(resultSet.getString("USERID"));
             order.setTotalPrice(resultSet.getDouble("TOTALPRICE"));
             order.setDate(resultSet.getDate("DATE"));
+            order.setStatus(resultSet.getString("STATUS"));
             
             orders.add(order);
         }
