@@ -1,5 +1,6 @@
 package uts.isd.controller;
 
+import org.apache.commons.codec.binary.Base64;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -17,13 +18,13 @@ import uts.isd.Validator;
 import uts.isd.model.User;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.DBManager;
+import uts.isd.model.dao.UserDBManager;
 
 public class UserServlet extends HttpServlet {
-    
     private DBConnector db;
-    private DBManager manager;
+    private UserDBManager manager;
     private Connection conn;
-
+    
     @Override //Create and instance of DBConnector for the deployment session
     public void init() {
         try {
@@ -32,23 +33,36 @@ public class UserServlet extends HttpServlet {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    @Override //Add the DBConnector, DBManager, Connection instances to the session
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");       
-        HttpSession session = request.getSession();
-        conn = db.openConnection();   
-        try {
-            //TODO: don't need try catch yet
-            manager = new DBManager(conn);
-        } catch (SQLException ex) {
-            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        
+        String action = request.getParameter("action");
+        if("logout".equals(action)) {
+            HttpSession session = request.getSession();
+            session.invalidate();
+            response.sendRedirect("index.jsp");
+
         }
-        session.setAttribute("db", db);
-        session.setAttribute("manager", manager);
-        session.setAttribute("conn", conn);
-    } 
+    }
+    
+//    @Override //Add the DBConnector, DBManager, Connection instances to the session
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+//            throws ServletException, IOException {
+//        response.setContentType("text/html;charset=UTF-8");       
+//        HttpSession session = request.getSession();
+//        conn = db.openConnection();   
+//        try {
+//            //TODO: don't need try catch yet
+//            manager = new DBManager(conn);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        session.setAttribute("db", db);
+//        session.setAttribute("manager", manager);
+//        session.setAttribute("conn", conn);
+//    } 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -56,12 +70,8 @@ public class UserServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");       
         HttpSession session = request.getSession();
         conn = db.openConnection();   
-        try {
-            //TODO: don't need try catch yet
-            manager = new DBManager(conn);
-        } catch (SQLException ex) {
-            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //TODO: don't need try catch yet
+        manager = new UserDBManager(conn);
         session.setAttribute("db", db);
         session.setAttribute("manager", manager);
         session.setAttribute("conn", conn);
@@ -71,10 +81,14 @@ public class UserServlet extends HttpServlet {
         if("register".equals(action)) {
             registerUser(request, response);
         } else if("update".equals(action)) {
-            updateUserDetails(request, response);
+            try {
+                updateUserDetails(request, response);
 //        } else if ("login".equals(action)) {
 //                login(request, response);          
 //        } 
+            } catch (SQLException ex) {
+                Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }
     
 //    private void login(HttpServletRequest request, HttpServletResponse response) 
@@ -100,42 +114,57 @@ public class UserServlet extends HttpServlet {
     private void registerUser(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
-        String id = "" + key; 
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String mobile = request.getParameter("mobile");
-        User user = new User(id, firstName, lastName, email, password, mobile);
-        
         HttpSession session = request.getSession();
-        if (validateUser(user, session)) {
-            // Add user to database
-            // TODO:
-            // db.addUser(user);
-            session.setAttribute("user", user);
-            // Send to home
-            RequestDispatcher dispatcher = request.getRequestDispatcher( "/index.jsp");
-            dispatcher.forward(request, response);
-            
-        } else {
-            // Send to register
-            RequestDispatcher dispatcher = request.getRequestDispatcher( "/register.jsp");
-            dispatcher.forward(request, response);
-            
+        conn = db.openConnection();   
+        manager = new UserDBManager(conn); 
+        session.setAttribute("db", db);
+        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("conn", conn);
+        
+        try {
+            String action = request.getParameter("action");
+            if("register".equals(action)) {
+                registerUser(request, response);
+            } else if("update".equals(action)){
+                updateUserDetails(request, response);
+            }
+        } catch (IOException | SQLException | ServletException ex) {
+            Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
-    private void updateUserDetails(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
+//    private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+//        int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
+//        String id = "" + key; 
+//        String firstName = request.getParameter("firstName");
+//        String lastName = request.getParameter("lastName");
+//        String email = request.getParameter("email");
+//        String password = request.getParameter("password");
+//        String mobile = request.getParameter("mobile");
+//        HttpSession session = request.getSession();
+//        session.setAttribute("firstNameFormVal", firstName);
+//        session.setAttribute("lastNameFormVal", lastName);
+//        session.setAttribute("emailFormVal", email);
+//        session.setAttribute("mobileFormVal", mobile);
+//        User user = new User(id, firstName, lastName, email, password, mobile);
+//        
+//        if (validateUser(user, session)) {
+//            String encodedPassword = encodePassword(password);
+//            manager.addUser(id, email, encodedPassword, firstName, lastName, mobile);
+//            session.setAttribute("user", user);
+//            response.sendRedirect("index.jsp"); // Send to home
+//        } else {
+//            response.sendRedirect("register.jsp"); // Send to register
+//        }
+//    }    
+    
+    private void updateUserDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
         HttpSession session = request.getSession();
         // Get existing user id and password from user in session
         User existingUser = (User) session.getAttribute("user");
         String id = existingUser.getId();
         String password = existingUser.getPassword();
-        
         // Get values to update from request
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
@@ -145,20 +174,14 @@ public class UserServlet extends HttpServlet {
         
         if (validateUser(updatedUser, session)) {
             session.setAttribute("user", updatedUser);
-            // Update user details in database
-            // TODO:
-            // db.updateUser(id, fisrtName, lastName, email, mobile);
+            manager.updateUser(id, email, firstName, lastName, mobile);
             session.setAttribute("showUpdateBanner", "show");
         } else {
             session.setAttribute("showUpdateBanner", null);
         }
         // Send to user details page
-        RequestDispatcher dispatcher = request.getRequestDispatcher( "/userDetails.jsp");
-        dispatcher.forward(request, response);
-        
+        response.sendRedirect("userDetails.jsp");
     }
-    
-    
     
     private boolean validateUser(User user, HttpSession session) {
         Validator validator = new Validator();
@@ -188,19 +211,39 @@ public class UserServlet extends HttpServlet {
             session.setAttribute("emailError", null);
         }
 
-        if (!validator.validatePassword(user.getPassword())) {
-            session.setAttribute("passwordError", "Password must be alphanumeric and over 8 characters");
-            inputsValid = false;
-        } else {
-            session.setAttribute("passwordError", null);
-        }
-
         if (!validator.validateMobile(user.getMobile())) { // TODO: Add mobile
             session.setAttribute("mobileError", "Mobile...");
             inputsValid = false;
         } else {
             session.setAttribute("mobileError", null);
         }
+        
+        if (inputsValid == false || !validator.validatePassword(user.getPassword())) {
+            session.setAttribute("passwordError", "Password must be alphanumeric and over 8 characters");
+            inputsValid = false;
+        } else {
+            session.setAttribute("passwordError", null);
+        }
         return inputsValid;
+    }
+    
+    private String encodePassword(String password) {
+        // Encode password using BASE64
+        return Base64.encodeBase64String(password.getBytes());
+    }
+    
+    private String decodePassword(String encodedPassword) {
+        // Decode BASE64 password
+        byte[] decoded = Base64.decodeBase64(encodedPassword);
+        return new String(decoded);
+    }
+    
+    @Override //Destroy the servlet and release the resources of the application
+    public void destroy() {
+        try {
+            db.closeConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

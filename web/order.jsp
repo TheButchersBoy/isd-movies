@@ -4,69 +4,50 @@
     Author     : jessicawiradinata
 --%>
 
+<%@page import="uts.isd.model.Movie"%>
+<%@page import="uts.isd.model.Order"%>
+<%@page import="uts.isd.model.dao.OrderDBManager"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="navbar.jsp" %>
+<c:import url="/OrderServlet" />
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Order</title>
     </head>
     <body>
+        <%  Order order = (Order)session.getAttribute("order"); %>
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 4rem">Your Order</h1>
             <div style="display: flex">
                 <div style="width: 50%; margin-right: 4rem">
                     <ul class="list-group list-group-flush">
-                      <li class="list-group-item" style="display: flex;">
-                          <div style="flex-grow: 1">
-                              <h4>Movie Title</h4>
-                              <p>$20.50</p>
-                          </div>
-                          <div style="display: flex; align-items: center">
-                              <button type="button" class="btn btn-danger">
-                                  Remove
-                              </button>
-                          </div>
-                      </li>
-                      <li class="list-group-item" style="display: flex;">
-                          <div style="flex-grow: 1">
-                              <h4>Movie Title</h4>
-                              <p>$20.50</p>
-                          </div>
-                          <div style="display: flex; align-items: center">
-                              <button type="button" class="btn btn-danger">
-                                  Remove
-                              </button>
-                          </div>
-                      </li>
-                      <li class="list-group-item" style="display: flex;">
-                          <div style="flex-grow: 1">
-                              <h4>Movie Title</h4>
-                              <p>$20.50</p>
-                          </div>
-                          <div style="display: flex; align-items: center">
-                              <button type="button" class="btn btn-danger">
-                                  Remove
-                              </button>
-                          </div>
-                      </li>
+                        <c:forEach items="<%= order.getMovies() %>" var="movie">
+                            <% Movie movie = (Movie)pageContext.getAttribute("movie"); %>
+                            <li class="list-group-item" style="display: flex;">
+                                <div style="flex-grow: 1">
+                                    <h4><%= movie.getTitle() %></h4>
+                                    <p>$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                </div>
+                                <form action="OrderServlet" method="post" style="display: flex; align-items: center; margin-bottom: 0">
+                                    <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                                    <input type="submit" class="btn btn-danger" name="action" value="Remove">
+                                </form>
+                            </li>
+                        </c:forEach>
                     </ul>
                 </div>
                 <div class="panel panel-default" style="width: 50%;  padding-left: 1rem; padding-right: 1rem; display: flex;">
                     <div class="panel-body" style="display: flex; flex-direction: column; flex-grow: 1">
                         <h3 style="margin-top: 1rem; margin-bottom: 2rem;">Order details</h3>
-                        <div style="display: flex; flex-grow: 1">
+                        <div style="display: flex">
                             <p style="flex-grow: 1">Total price</p>
-                            <p>$61.50</p>
+                            <p>$<%= String.format("%.2f", order.getTotalPrice()) %></p>
                         </div>
-                        <div style="display: flex; justify-content: flex-end">
-                            <button type="button" class="btn btn-danger" style="margin-right: 1rem">
-                                Cancel
-                            </button>
-                            <button type="button" class="btn btn-primary">
-                                Submit order
-                            </button>
-                        </div>
+                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; margin-bottom: 0">
+                            <input type="submit" class="btn btn-danger" style="margin-right: 1rem" name="action" value="Cancel">
+                            <input type="submit" class="btn btn-primary" name="action" value="Submit">
+                        </form>
                     </div>
                 </div>
             </div>
