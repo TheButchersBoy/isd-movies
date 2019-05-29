@@ -35,12 +35,25 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String action = request.getParameter("action");
-        if("logout".equals(action)) {
-            HttpSession session = request.getSession();
-            session.invalidate();
-            response.sendRedirect("index.jsp");
+        HttpSession session = request.getSession();
+        conn = db.openConnection();   
+        manager = new UserDBManager(conn); 
+        session.setAttribute("db", db);
+        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("conn", conn);
+        
+        try {
+            String action = request.getParameter("action");
+            if("logout".equals(action)) {
+                logout(response, session);
+            } else if ("delete".equals(action)) {
+                deleteUser(response, session);
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        // TODO: Close connection?
     }
 
     @Override
@@ -53,7 +66,7 @@ public class UserServlet extends HttpServlet {
         session.setAttribute("db", db);
         session.setAttribute("userUserDBManager", manager);
         session.setAttribute("conn", conn);
-        
+                
         try {
             String action = request.getParameter("action");
             if("register".equals(action)) {
@@ -65,6 +78,7 @@ public class UserServlet extends HttpServlet {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        // TODO: Close connection?
     }
     
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
@@ -90,7 +104,19 @@ public class UserServlet extends HttpServlet {
         } else {
             response.sendRedirect("register.jsp"); // Send to register
         }
-    }    
+    }  
+    
+    private void deleteUser(HttpServletResponse response, HttpSession session) throws IOException, SQLException {
+        User user = (User) session.getAttribute("user");
+        String id = user.getId();
+        manager.deleteUser(id);
+        logout(response, session);
+    }
+    
+    private void logout(HttpServletResponse response, HttpSession session) throws IOException {
+        session.invalidate();
+        response.sendRedirect("index.jsp");
+    }
     
     private void updateUserDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
         HttpSession session = request.getSession();
@@ -116,7 +142,7 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect("userDetails.jsp");
     }
     
-    private boolean validateUser(User user, HttpSession session) {
+    private boolean validateUser(User user, HttpSession session) throws SQLException {
         Validator validator = new Validator();
         boolean inputsValid = true;
                 
@@ -137,15 +163,15 @@ public class UserServlet extends HttpServlet {
         if (!validator.validateEmail(user.getEmail())) {
             session.setAttribute("emailError", "Must be a valid email. Eg. example@example.com");
             inputsValid = false;
-//        } else if (omsApp.emailAlreadyExists(email)){
-//            session.setAttribute("emailError", "Email already registered");
-//            inputsValid = false;
+        } else if (manager.doesUserExist(user.getEmail())){
+            session.setAttribute("emailError", "Email already registered");
+            inputsValid = false;
         } else {
             session.setAttribute("emailError", null);
         }
 
         if (!validator.validateMobile(user.getMobile())) { // TODO: Add mobile
-            session.setAttribute("mobileError", "Mobile...");
+            session.setAttribute("mobileError", "Mobile must be between 8 and 15 numbers");
             inputsValid = false;
         } else {
             session.setAttribute("mobileError", null);

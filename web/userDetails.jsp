@@ -15,6 +15,15 @@
     String showUpdateBanner = (String) session.getAttribute("showUpdateBanner");
 %>
 <%@include file="navbar.jsp" %>
+<script>
+function confirmDelete() {
+    var answer=confirm("Are you sure you want to detele your account?");
+    if (answer === true) {
+        return true;
+    }
+    return false;
+}
+</script>
 <html>
     <body id="register">            
         <div class="container">
@@ -32,42 +41,42 @@
                     <table class="table" style="width:50%">
                         <tr>
                             <td><label for="firstName">First Name:</td>                
-                            <td><input type="text" class="form-control" name="firstName" value="<%=firstName%>"/></td>
+                            <td><input type="text" class="form-control" name="firstName" maxlength="49" value="<%=firstName%>"/></td>
                         </tr>
                         <%if (firstNameError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=firstNameError%></p><td>
+                                <td><p class="error-text"><%=firstNameError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
                             <td><label for="lastName">Last Name:</td>                
-                            <td><input type="text" class="form-control" name="lastName" value="<%=lastName%>"/></td>
+                            <td><input type="text" class="form-control" name="lastName" maxlength="49" value="<%=lastName%>"/></td>
                         </tr>
                         <%if (lastNameError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=lastNameError%></p><td>
+                                <td><p class="error-text"><%=lastNameError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
                             <td><label for="email">Email</td>                
-                            <td><input type="text" class="form-control" name="email" value="<%=email%>"/></td>
+                            <td><input type="text" class="form-control" name="email" maxlength="49" value="<%=email%>"/></td>
                         </tr>
                         <%if (emailError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=emailError%></p><td>
+                                <td><p class="error-text"><%=emailError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
                             <td><label for="mobile">Mobile</td>                
-                            <td><input type="text" class="form-control" name="mobile" value="<%=mobile%>"/></td>                
+                            <td><input type="text" class="form-control" name="mobile" maxlength="15" value="<%=mobile%>"/></td>                
                         </tr>
                         <%if (mobileError != null) {%>
                             <tr>
                                 <td></td>
-                                <td><p class="red"><%=mobileError%></p><td>
+                                <td><p class="error-text"><%=mobileError%></p><td>
                             </tr>
                         <%}%>
                         <tr>
@@ -80,8 +89,7 @@
                     
                 </div>
             </form>
-            <!--TODO: Add onClick() functionality with "Are you sure?" alert-->
-            <input class="btn btn-danger" name="submitBtn" value="Delete account"/>
+            <a href="UserServlet?action=delete" class="btn btn-danger" onclick="return confirmDelete()" >Delete account</a>
         </div>
     </body>
     <%@include file="footer.jsp" %>
