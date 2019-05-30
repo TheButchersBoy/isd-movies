@@ -11,25 +11,25 @@ import java.util.Date;
  * @author Kyle Zeng
  */
 public class Session {
-    private String userId;
+    private String id;
     private Date date;
     private long loginTime;
     private long logoutTime;
     
     
-    public Session(String userId, Date date, long loginTime, long logoutTime) {
-        this.userId = userId;
+    public Session(String id, Date date, long loginTime, long logoutTime) {
+        this.id = id;
         this.date = date;
         this.loginTime = loginTime;
         this.logoutTime = logoutTime;
     }
     
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
     
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
     
     public Date getDate() {
