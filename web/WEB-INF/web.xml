@@ -14,12 +14,12 @@
         <servlet-class>uts.isd.controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ProfileServlet</servlet-name>
-        <servlet-class>uts.isd.controller.ProfileServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>OrderServlet</servlet-name>
         <servlet-class>uts.isd.controller.OrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SessionServlet</servlet-name>
+        <servlet-class>uts.isd.controller.SessionServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ConnServlet</servlet-name>
@@ -34,12 +34,12 @@
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ProfileServlet</servlet-name>
-        <url-pattern>/ProfileServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>OrderServlet</servlet-name>
         <url-pattern>/OrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SessionServlet</servlet-name>
+        <url-pattern>/SessionServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
