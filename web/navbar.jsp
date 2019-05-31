@@ -57,7 +57,7 @@
                     </a>
                 </li>
                  <li>
-                    <a >
+                    <a href="UserServlet?action=logout">
                         <span class="glyphicon glyphicon-log-out"></span>
                     </a>
                 </li>
