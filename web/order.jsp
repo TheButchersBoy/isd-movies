@@ -45,7 +45,7 @@
                             <p>$<%= String.format("%.2f", order.getTotalPrice()) %></p>
                         </div>
                         <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; margin-bottom: 0">
-                            <input type="submit" class="btn btn-danger" style="margin-right: 1rem" name="action" value="Cancel">
+                            <input type="submit" class="btn btn-danger" style="margin-right: 1rem" name="action" value="Clear">
                             <input type="submit" class="btn btn-primary" name="action" value="Submit">
                         </form>
                     </div>
