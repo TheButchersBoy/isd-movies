@@ -2,13 +2,11 @@ package uts.isd.controller;
 
 import org.apache.commons.codec.binary.Base64;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -163,8 +161,7 @@ public class UserServlet extends HttpServlet {
         } else {
             session.setAttribute("showUpdateBanner", null);
         }
-        // Send to user details page
-        response.sendRedirect("userDetails.jsp");
+        response.sendRedirect("userDetails.jsp"); // Send to user details page
     }
     
     private void updatePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
