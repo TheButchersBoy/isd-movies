@@ -1,18 +1,19 @@
 package uts.isd.model.dao;
 
+import uts.isd.model.User;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.*;
 
 public class DBManager {
+    private Statement st;
     private Connection conn;
     
-    public DBManager(Connection conn) {
-        this.conn = conn;
+    public DBManager(Connection conn) throws SQLException {
+        st = conn.createStatement();
     }
-    
-    
+     
     public boolean doesUserExist(String email ) {
         boolean userExists = false;
         try {
@@ -62,6 +63,16 @@ public class DBManager {
         }
     }
     
+    public boolean checkUser (String email, String password) throws SQLException {
+        String sql = "select * from Users where email='" + email + "'AND password='" + password + "'";
+        PreparedStatement insertUser = conn.prepareStatement(sql);
+        insertUser.setString(1,email);
+        insertUser.setString(2,password);
+        
+        ResultSet rs = insertUser.executeQuery();
+        return rs.next();
+    }
+    
     public void updateUser(String id, String email, String password, 
         String firstName, String lastName, String mobile) {
         
@@ -102,6 +113,16 @@ public class DBManager {
         } finally{
             //closeConnection();
         }
+    }
+    
+    private void closeConnection() {
+        try{
+            if(st!=null) {
+               st.close();
+            }
+         } catch(SQLException se2){
+             // Nothing we can do
+         }
     }
 }
 

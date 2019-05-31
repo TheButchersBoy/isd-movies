@@ -3,12 +3,33 @@ package uts.isd.model.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.*;
+import uts.isd.model.User;
 
 public class UserDBManager {
     private Connection conn;
     
     public UserDBManager(Connection conn) {
         this.conn = conn;
+    }
+    
+    public User login(String email, String password) throws SQLException {
+        String sql = "select * from USERS where email = ? AND password = ? ";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, email);
+        stmt.setString(2, password);
+        ResultSet resultSet = stmt.executeQuery();
+        User user = new User();
+        while(resultSet.next()) {
+            user.setId(resultSet.getString("ID"));
+            user.setEmail(resultSet.getString("EMAIL"));
+            user.setPassword(resultSet.getString("PASSWORD"));
+            user.setFirstName(resultSet.getString("FIRST_NAME"));
+            user.setLastName(resultSet.getString("LAST_NAME"));
+            user.setMobile(resultSet.getString("MOBILE"));
+        }
+        // clean up
+        stmt.close();
+        return user;
     }
     
     public boolean doesUserExist(String email ) throws SQLException {

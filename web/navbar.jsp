@@ -48,7 +48,12 @@
                 </li>
                 <li>
                     <a href="userDetails.jsp">
-                        <span class="glyphicon glyphicon-user"></span>
+                        <span class="glyphicon glyphicon-user">UserDetails</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="userProfile.jsp">
+                        <span class="glyphicon glyphicon-list-alt">UserProfile</span>
                     </a>
                 </li>
                  <li>

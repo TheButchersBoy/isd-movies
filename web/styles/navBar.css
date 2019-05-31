@@ -20,4 +20,6 @@ span{
 #register .register #registertext, #edit .edit #edittext ,#logout .logout #logouttext, #add .add #addtext
 {
     color: white;
+}.list-group {
+
 }
