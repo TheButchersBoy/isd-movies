@@ -2,7 +2,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<link rel="stylesheet" type="text/css" href="styles/bookList.css"/>	
+<link rel="stylesheet" type="text/css" href="styles/bookList.css"/>
 <link rel="stylesheet" type="text/css" href="styles/navBar.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <%
@@ -10,18 +10,31 @@
 %>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
-        <div class="navbar-header">               
+        <div class="navbar-header">
             <li>
                 <a class="navbar-brand" href="index.jsp">ISD Movies</a>
-            </li>         
+            </li>
         </div>
-        <ul class="nav navbar-nav">                 
+        <ul class="nav navbar-nav">
             <li class="categories">
-                <a class="navbar-texts" href="index.jsp">Categories</a>
+                
+                <a class="navbar-texts" href="category">Movie Category</a>
+              <!--  
+                <form id="form1" action="category" method="post">
+    
+                
+    <a id="hometext" href="javascript:;" onclick="document.getElementById('form1').submit();">Movie Category</a>
+                
+         </form>
+                -->
+                
             </li>
             <li class="search">
-                <a class="navbar-texts" href="index.jsp">&#x1F50D;</a>
-            </li>   
+                <a class="navbar-texts" href="search.jsp">Search Movie</a>
+            </li>
+            <li class="addmovie">
+                <a class="navbar-texts" href="addmovie.jsp">Add Movie</a>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <%if (userNav == null) {%>
@@ -57,8 +70,8 @@
                     </a>
                 </li>
                  <li>
-                    <a href="UserServlet?action=logout">
-                        <span class="glyphicon glyphicon-log-out">Logout</span>
+                    <a >
+                        <span class="glyphicon glyphicon-log-out"></span>
                     </a>
                 </li>
             <%}%>

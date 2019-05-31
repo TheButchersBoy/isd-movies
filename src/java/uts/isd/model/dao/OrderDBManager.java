@@ -32,9 +32,11 @@ public class OrderDBManager {
         // Mock
         Order order = new Order();
         ArrayList<Movie> movies = new ArrayList();
-        movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
-        movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
-        movies.add(new Movie("1003", "Titanic", "", 15.0, 0, "Drama"));
+
+//        movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
+//        movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
+//        movies.add(new Movie("1003", "Titanic", "", 15.0, 0, "Drama"));
+
         order.setMovies(movies);
         order.updateTotalPrice();
         order.setUserId("987654321");
