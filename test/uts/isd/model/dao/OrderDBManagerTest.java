@@ -30,6 +30,7 @@ public class OrderDBManagerTest {
     private static DBConnector db;
     private static Connection conn;
     private static OrderDBManager manager;
+    private static String userId = "999999999";
     
     public OrderDBManagerTest() {
     }
@@ -65,6 +66,12 @@ public class OrderDBManagerTest {
     
     @After
     public void tearDown() {
+        try {
+            PreparedStatement deleteTestOrder = conn.prepareStatement("DELETE FROM ORDERS WHERE USERID = '" + userId + "'");
+            deleteTestOrder.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBManagerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -72,7 +79,6 @@ public class OrderDBManagerTest {
      */
     @Test
     public void testAddOrder() throws Exception {
-        String userId = "999999999";
         ArrayList<Movie> movies = new ArrayList();
         Double totalPrice = 10.0;
 
@@ -81,31 +87,19 @@ public class OrderDBManagerTest {
         ArrayList<Order> orders = manager.getOrders(userId);
         orders.removeIf(order -> !order.getUserId().equals(userId));
         Order expectedOrder = orders.get(0);
-        expectedOrder.getMovies().forEach(movie -> System.out.println("expected " + movie.getTitle()));
-        movies.forEach(movie -> System.out.println("movie " + movie.getTitle()));
         
         assertNotEquals(expectedOrder, null);
         assertEquals(expectedOrder.getUserId(), userId);
-        assertEquals(expectedOrder.getTotalPrice(), 10.0, 0.0);
-        
-        PreparedStatement deleteTestOrder = conn.prepareStatement("DELETE FROM ORDERS WHERE USERID = '999999999'");
-        deleteTestOrder.executeUpdate();
-        PreparedStatement deleteTestOrderMovie = conn.prepareStatement("DELETE FROM ORDER_MOVIE WHERE MOVIEID = '9999'");
-        deleteTestOrderMovie.executeUpdate();
     }
 
     /**
      * Test of getOrders method, of class OrderDBManager.
      */
-//    @Test
-//    public void testGetOrders() throws Exception {
-//        System.out.println("getOrders");
-//        OrderDBManager instance = null;
-//        ArrayList<Order> expResult = null;
-//        ArrayList<Order> result = instance.getOrders();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-    
+    @Test
+    public void testGetOrders() throws Exception {
+        manager.addOrder(userId, new ArrayList(), 10.0);
+        ArrayList<Order> orders = manager.getOrders(userId);
+        
+        assertEquals(orders.size(), 1);
+    }
 }

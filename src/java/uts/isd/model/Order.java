@@ -72,6 +72,10 @@ public class Order {
         this.date = date;
     }
     
+    public void addMovie(Movie movie) {
+        movies.add(movie);
+    }
+    
     public void removeMovie(String movieId) {
         movies.removeIf(movie -> movie.getId().equals(movieId));
     }
