@@ -24,7 +24,7 @@ public class SessionsDBManager {
     public void initialiseSessions(HttpSession session) {
         Sessions sessions = new Sessions();
         ArrayList<Session> sessionList = new ArrayList();
-        sessionList.add(new Session("1", new java.sql.Date(new Date().getTime())));
+        sessionList.add(new Session("1","123", new java.sql.Date(new Date().getTime())));
         
         sessions.setSessions(sessionList);
         sessions.setUserId("987654321");
@@ -44,6 +44,14 @@ public class SessionsDBManager {
         addSessions.executeUpdate();
     }
     
+    public void clearSessions(String userId) throws SQLException {
+        String clear = "DELETE FROM USERSESSIONS WHERE USERID = ?";
+        PreparedStatement clearSession = conn.prepareStatement(clear);
+        clearSession.setString(1, userId);
+        clearSession.executeUpdate();
+        System.out.println("15245642651");
+    }
+    
     public ArrayList<Session> getSessions(String userId) throws SQLException {
         String sessionSql = "SELECT * FROM USERSESSIONS WHERE USERID = ? ORDER BY DATE DESC";
         PreparedStatement getSessions = conn.prepareStatement(sessionSql);
@@ -56,9 +64,8 @@ public class SessionsDBManager {
             Session session = new Session();
             
             session.setId(rs.getString("ID"));
-            session.setId(rs.getString("USERID"));
-            session.setDate(rs.getDate("DATE"));
-            
+            session.setUserId(rs.getString("USERID"));
+            session.setDate(rs.getDate("DATE"));            
             sessionList.add(session);
         }
         return sessionList;
