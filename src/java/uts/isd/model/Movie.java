@@ -36,7 +36,7 @@ public class Movie {
     }
     
 
-    public Movie(String movie_ID, String movieTitle, String genre, int year, String description, int stock, double price,byte[]movieImg) {
+    public Movie(String id, String title, String genre, int year, String description, int stock, double price,byte[]movieImg) {
         this.id = id;
         this.title = title;
         this.genre = genre;
