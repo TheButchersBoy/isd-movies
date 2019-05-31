@@ -38,8 +38,8 @@ public class TestDB {
     
     private static void testAddOrder(OrderDBManager db) {
         ArrayList<Movie> movies = new ArrayList();
-        movies.add(new Movie("1001", "The Avengers", "", 40.55));
-        movies.add(new Movie("1002", "Antman", "", 20.0));
+        movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
+        movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
 
         try {
             db.addOrder("987654321", movies, 40.55);

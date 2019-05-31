@@ -18,6 +18,7 @@ import uts.isd.Validator;
 import uts.isd.model.User;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.DBManager;
+import uts.isd.model.dao.UserDAO;
 import uts.isd.model.dao.UserDBManager;
 
 public class UserServlet extends HttpServlet {
@@ -38,82 +39,6 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String action = request.getParameter("action");
-        if("logout".equals(action)) {
-            HttpSession session = request.getSession();
-            session.invalidate();
-            response.sendRedirect("index.jsp");
-
-        }
-    }
-    
-//    @Override //Add the DBConnector, DBManager, Connection instances to the session
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-//            throws ServletException, IOException {
-//        response.setContentType("text/html;charset=UTF-8");       
-//        HttpSession session = request.getSession();
-//        conn = db.openConnection();   
-//        try {
-//            //TODO: don't need try catch yet
-//            manager = new DBManager(conn);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        session.setAttribute("db", db);
-//        session.setAttribute("manager", manager);
-//        session.setAttribute("conn", conn);
-//    } 
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        response.setContentType("text/html;charset=UTF-8");       
-        HttpSession session = request.getSession();
-        conn = db.openConnection();   
-        //TODO: don't need try catch yet
-        manager = new UserDBManager(conn);
-        session.setAttribute("db", db);
-        session.setAttribute("manager", manager);
-        session.setAttribute("conn", conn);
-        
-        String action= request.getParameter("action");
-        // TOOD: Add try-catch here?
-        if("register".equals(action)) {
-            registerUser(request, response);
-        } else if("update".equals(action)) {
-            try {
-                updateUserDetails(request, response);
-//        } else if ("login".equals(action)) {
-//                login(request, response);          
-//        } 
-            } catch (SQLException ex) {
-                Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-    }
-    
-//    private void login(HttpServletRequest request, HttpServletResponse response) 
-//            throws ServletException, IOException, SQLException {
-//        
-//        HttpSession session = request.getSession();
-//        String email = request.getParameter("email");
-//        String password = request.getParameter("password");
-//        User user = manager.findUser(email, password);
-//        
-//        if (manager != null && manager.checkUser(email, password)){
-//            session.setAttribute("userLogin", user);
-//            RequestDispatcher rd=request.getRequestDispatcher("loginWelcome.jsp");  
-//        rd.forward(request,response); 
-//        }
-//        else {
-//            session.setAttribute("existErr", "User profile does not exist!");
-//            RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
-//        rd.forward(request,response); 
-//        }
-    }
-
-    private void registerUser(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
         HttpSession session = request.getSession();
         conn = db.openConnection();   
         manager = new UserDBManager(conn); 
@@ -123,7 +48,33 @@ public class UserServlet extends HttpServlet {
         
         try {
             String action = request.getParameter("action");
-            if("register".equals(action)) {
+            if("logout".equals(action)) {
+                logout(response, session);
+            } else if ("delete".equals(action)) {
+                deleteUser(response, session);
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+               
+        HttpSession session = request.getSession();
+        conn = db.openConnection();   
+        manager = new UserDBManager(conn); 
+        session.setAttribute("db", db);
+        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("conn", conn);
+                
+        try {
+            String action = request.getParameter("action");
+            if("login".equals(action)) {
+                login(request, response);
+            } else if("register".equals(action)) {
                 registerUser(request, response);
             } else if("update".equals(action)){
                 updateUserDetails(request, response);
@@ -131,33 +82,65 @@ public class UserServlet extends HttpServlet {
         } catch (IOException | SQLException | ServletException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     
-//    private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-//        int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
-//        String id = "" + key; 
-//        String firstName = request.getParameter("firstName");
-//        String lastName = request.getParameter("lastName");
-//        String email = request.getParameter("email");
-//        String password = request.getParameter("password");
-//        String mobile = request.getParameter("mobile");
-//        HttpSession session = request.getSession();
-//        session.setAttribute("firstNameFormVal", firstName);
-//        session.setAttribute("lastNameFormVal", lastName);
-//        session.setAttribute("emailFormVal", email);
-//        session.setAttribute("mobileFormVal", mobile);
-//        User user = new User(id, firstName, lastName, email, password, mobile);
-//        
-//        if (validateUser(user, session)) {
-//            String encodedPassword = encodePassword(password);
-//            manager.addUser(id, email, encodedPassword, firstName, lastName, mobile);
-//            session.setAttribute("user", user);
-//            response.sendRedirect("index.jsp"); // Send to home
-//        } else {
-//            response.sendRedirect("register.jsp"); // Send to register
-//        }
-//    }    
+     void login(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try{
+            User user = new User();
+            user.setEmail(request.getParameter("email"));
+            user.setPassword(request.getParameter("password"));
+
+            user = UserDAO.login(user);
+            if(user.isValid()) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("currentSessionUser", user);
+                response.sendRedirect("loginWelcome.jsp");
+            }
+            else
+                response.sendRedirect("index.jsp");
+        }    
+        catch (IOException theException) {
+            System.out.println(theException);
+        }
+     }
+
+    private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
+        String id = "" + key; 
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String mobile = request.getParameter("mobile");
+        HttpSession session = request.getSession();
+        session.setAttribute("firstNameFormVal", firstName);
+        session.setAttribute("lastNameFormVal", lastName);
+        session.setAttribute("emailFormVal", email);
+        session.setAttribute("mobileFormVal", mobile);
+        User user = new User(id, firstName, lastName, email, password, mobile);
+        
+        if (validateUser(user, session)) {
+            String encodedPassword = encodePassword(password);
+            manager.addUser(id, email, encodedPassword, firstName, lastName, mobile);
+            session.setAttribute("user", user);
+            response.sendRedirect("index.jsp"); // Send to home
+        } else {
+            response.sendRedirect("register.jsp"); // Send to register
+        }
+    }  
+    
+    private void deleteUser(HttpServletResponse response, HttpSession session) throws IOException, SQLException {
+        User user = (User) session.getAttribute("user");
+        String id = user.getId();
+        manager.deleteUser(id);
+        logout(response, session);
+    }
+    
+    private void logout(HttpServletResponse response, HttpSession session) throws IOException {
+        session.invalidate();
+        response.sendRedirect("index.jsp");
+    }
     
     private void updateUserDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
         HttpSession session = request.getSession();
@@ -183,7 +166,7 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect("userDetails.jsp");
     }
     
-    private boolean validateUser(User user, HttpSession session) {
+    private boolean validateUser(User user, HttpSession session) throws SQLException {
         Validator validator = new Validator();
         boolean inputsValid = true;
                 
@@ -204,15 +187,15 @@ public class UserServlet extends HttpServlet {
         if (!validator.validateEmail(user.getEmail())) {
             session.setAttribute("emailError", "Must be a valid email. Eg. example@example.com");
             inputsValid = false;
-//        } else if (omsApp.emailAlreadyExists(email)){
-//            session.setAttribute("emailError", "Email already registered");
-//            inputsValid = false;
+        } else if (manager.doesUserExist(user.getEmail())){
+            session.setAttribute("emailError", "Email already registered");
+            inputsValid = false;
         } else {
             session.setAttribute("emailError", null);
         }
 
         if (!validator.validateMobile(user.getMobile())) { // TODO: Add mobile
-            session.setAttribute("mobileError", "Mobile...");
+            session.setAttribute("mobileError", "Mobile must be between 8 and 15 numbers");
             inputsValid = false;
         } else {
             session.setAttribute("mobileError", null);

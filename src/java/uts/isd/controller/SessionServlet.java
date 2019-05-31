@@ -54,6 +54,11 @@ public class SessionServlet extends HttpServlet {
         if (session.getAttribute("sessions") == null) {
             manager.initialiseSessions(session);
         }
+        try {
+            //getSessions(request);
+        } catch (Exception ex) {
+            Logger.getLogger(SessionServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
         
     @Override

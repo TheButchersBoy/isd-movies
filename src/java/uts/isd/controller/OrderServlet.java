@@ -74,11 +74,13 @@ public class OrderServlet extends HttpServlet {
         String action= request.getParameter("action");
         
         try {
-            if ("Submit".equals(action)) {
+            if (action.equals("Submit")) {
                 submitOrder(request, response);
-            } else if ("Remove".equals(action)) {
+            } else if (action.equals("Remove")) {
                 removeMovie(request, response);
-            } else if ("Cancel".equals(action)) {
+            } else if (action.equals("Clear")) {
+                clearOrder(request, response);
+            } else if (action.equals("Cancel")) {
                 cancelOrder(request, response);
             }
         } catch (Exception ex) {
@@ -107,12 +109,20 @@ public class OrderServlet extends HttpServlet {
         response.sendRedirect("orderAction.jsp");
     }
     
-    private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void clearOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         
         session.setAttribute("order", new Order());
         
         response.sendRedirect("order.jsp");
+    }
+    
+    private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        String orderId = request.getParameter("orderId");
+        
+        manager.cancelOrder(orderId);
+        
+        response.sendRedirect("orderHistory.jsp");
     }
     
     private void removeMovie(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnector {
-    private String URL = "jdbc:derby://localhost:1527/omsdatabase";
-    private String dbuser = "username";
-    private String dbpass = "password";
+    private String URL = "jdbc:derby://localhost:1527/movieDB";
+    private String dbuser = "omsadmin";
+    private String dbpass = "omsadmin";
     private String driver = "org.apache.derby.jdbc.ClientDriver";
     static Connection connection;
     static Connection con;

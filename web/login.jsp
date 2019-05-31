@@ -6,7 +6,7 @@
         <div class="container">
             <h1>Login</h1>
             <br />
-            <form action="LoginServlet" method="post">      
+            <form action="UserServlet" method="post">      
                 <div class="form-group">        
                     <table class="table" style="width:35%;">
                         <tr>
