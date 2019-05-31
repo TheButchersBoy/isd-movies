@@ -24,6 +24,7 @@ public class OrderDBManager {
     
     private Connection conn;
     
+    // Initialises the order db manager
     public OrderDBManager(Connection conn) throws SQLException {
         this.conn = conn;
     }
@@ -52,6 +53,7 @@ public class OrderDBManager {
 //        }
     }
     
+    // Adds an order to the db
     public void addOrder(String userId, ArrayList<Movie> movies, Double totalPrice) throws SQLException {
         String insertOrderSql = "INSERT INTO ORDERS(ID, USERID, TOTALPRICE, DATE, STATUS) " + "VALUES (?,?,?,?,?)";
         PreparedStatement addOrder = conn.prepareStatement(insertOrderSql);
@@ -85,6 +87,7 @@ public class OrderDBManager {
         }
     }
     
+    // Updates an order status in the db to Cancelled
     public void cancelOrder(String orderId) throws SQLException {
         String cancelOrderSql = "UPDATE ORDERS SET STATUS = 'Cancelled' WHERE ID = ?";
         PreparedStatement cancelOrder = conn.prepareStatement(cancelOrderSql);
@@ -109,6 +112,7 @@ public class OrderDBManager {
         }
     }
     
+    // Retrieves orders from the db
     public ArrayList<Order> getOrders(String userId) throws SQLException {
         String ordersSql = "SELECT * FROM ORDERS WHERE USERID = ? ORDER BY DATE DESC ";
         PreparedStatement getOrders = conn.prepareStatement(ordersSql);
@@ -158,6 +162,7 @@ public class OrderDBManager {
         return orders;
     }
     
+    // Sets status of an order in db to be Submitted
     public void submitOrder(String orderId) throws SQLException {
         String submitOrderSql = "UPDATE ORDERS SET STATUS = 'Submitted' WHERE ID = ?";
         PreparedStatement submitOrder = conn.prepareStatement(submitOrderSql);
@@ -166,6 +171,7 @@ public class OrderDBManager {
         submitOrder.executeUpdate();
     }
     
+    // Removes a movie from an order in db
     public void removeMovie(String orderId, String movieId, Double totalPrice) throws SQLException {
         String removeMovieSql = "DELETE FROM ORDER_MOVIE WHERE ORDERID = ? AND MOVIEID = ?";
         PreparedStatement removeMovie = conn.prepareStatement(removeMovieSql);
