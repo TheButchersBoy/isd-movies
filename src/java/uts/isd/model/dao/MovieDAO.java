@@ -230,7 +230,7 @@ public class MovieDAO {
     // add a new movie
     public boolean addMovie(Movie movie) throws SQLException {
         String sql = "INSERT INTO MOVIEs"
-                + "(ID,TITLE,genre,movie_year,description,stock,  price, movie_img) "
+                + "(ID,title,genre,movie_year,description,stock,  price, movie_img) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?,?)";
 
         
