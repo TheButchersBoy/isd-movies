@@ -7,18 +7,21 @@
 %>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
-        <div class="navbar-header">               
+        <div class="navbar-header">
             <li>
                 <a class="navbar-brand" href="index.jsp">ISD Movies</a>
-            </li>         
+            </li>
         </div>
-        <ul class="nav navbar-nav">                 
+        <ul class="nav navbar-nav">
             <li class="categories">
-                <a class="navbar-texts" href="index.jsp">Categories</a>
+                <a class="navbar-texts" href="category">Movie Category</a>     
             </li>
             <li class="search">
-                <a class="navbar-texts" href="index.jsp">&#x1F50D;</a>
-            </li>   
+                <a class="navbar-texts" href="search.jsp">Search Movie</a>
+            </li>
+            <li class="addmovie">
+                <a class="navbar-texts" href="addmovie.jsp">Add Movie</a>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <%if (userNav == null) {%>
@@ -54,8 +57,8 @@
                     </a>
                 </li>
                  <li>
-                    <a href="UserServlet?action=logout">
-                        <span class="glyphicon glyphicon-log-out">Logout</span>
+                    <a >
+                        <span class="glyphicon glyphicon-log-out"></span>
                     </a>
                 </li>
             <%}%>

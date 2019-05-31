@@ -9,6 +9,21 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>uts.isd.controller.UserServlet</servlet-class>
     </servlet>
+    
+    <!--for movie servlet-->
+    <servlet>
+        <servlet-name>MovieServlet</servlet-name>
+        <servlet-class>uts.isd.controller.MovieServlet</servlet-class>
+        <multipart-config>
+    <location>/tmp</location>
+    <max-file-size>20848820</max-file-size>
+    <max-request-size>418018841</max-request-size>
+    <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
+    </servlet>
+    
+     
+    
     <servlet>
         <servlet-name>OrderServlet</servlet-name>
         <servlet-class>uts.isd.controller.OrderServlet</servlet-class>
@@ -28,7 +43,15 @@
     <servlet-mapping>
         <servlet-name>OrderServlet</servlet-name>
         <url-pattern>/OrderServlet</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>    
+    <!--Movie part here: -->
+    <servlet-mapping>
+        <servlet-name>MovieServlet</servlet-name>
+        <url-pattern>/category</url-pattern>
+        <url-pattern>/search</url-pattern>
+        <url-pattern>/addmovie</url-pattern>
+        <url-pattern>/showimage</url-pattern>
+    </servlet-mapping>  
     <servlet-mapping>
         <servlet-name>SessionServlet</servlet-name>
         <url-pattern>/SessionServlet</url-pattern>
