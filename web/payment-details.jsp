@@ -4,8 +4,10 @@
     Author     : Frank
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="uts.isd.model.dao.*"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="uts.isd.model.*"%>
 <%@include file="navbar.jsp" %>
+<c:import url="/PaymentServlet" />
 <!DOCTYPE html>
 <html>
     <head>

@@ -21,7 +21,7 @@ public class Payment {
     
     public Payment() {}
 
-    public Order(int id, Double amount, Double totalAmount, Date date, String method) {
+    public Payment(int id, Double amount, Double totalAmount, Date date, String method) {
         this.id = id;
         this.amount = amount;
         this.date = date;
@@ -44,7 +44,7 @@ public class Payment {
         return totalAmount;
     }
 
-    public void setTotalPrice(Double totalPrice) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
