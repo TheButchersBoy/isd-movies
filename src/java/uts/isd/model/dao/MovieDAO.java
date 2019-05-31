@@ -15,6 +15,7 @@ import java.sql.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import uts.isd.model.Movie;
 
 /**
@@ -34,7 +35,7 @@ public class MovieDAO {
     public Movie getMovieByID(int movieID) throws SQLException {
        // search for the movie by ID from the database
 
-        String sql = "SELECT * FROM dbadmin.movie WHERE movie_id = ?";
+        String sql = "SELECT * FROM movie WHERE id = ?";
         
         Movie movie = null;
 
@@ -45,21 +46,21 @@ public class MovieDAO {
             // found the required movie with specific id: 
             if (results.next()) {
                 
-                int id = results.getInt("MOVIE_ID");
+                String id = results.getString("id");
                 
-                String title = results.getString("MOVIETITLE");
+                String title = results.getString("TITLE");
                 String genre = results.getString("genre");
                 int year = results.getInt("MOVIE_YEAR");
                 
                 String description = results.getString("description");
-                int copies = results.getInt("copies");
+                int stock = results.getInt("stock");
                 
                 double price = results.getDouble("price");
                 byte[] movieImg = results.getBytes("MOVIE_IMG");
 
                 movie = new Movie( id,  title, 
                          genre,  year,  description, 
-                         copies,  price,movieImg);
+                         stock,  price,movieImg);
                 
             }
             statement.close();
@@ -74,7 +75,7 @@ public class MovieDAO {
         
         List<Movie> allMovieList = new ArrayList<>();
 
-        String sql = "SELECT * FROM dbadmin.movie";
+        String sql = "SELECT * FROM movie";
         
          System.out.println("Allmovies SQL: "+ sql);
 
@@ -87,14 +88,14 @@ public class MovieDAO {
                 
                 System.out.println("Movie Count:  "+ (++num));
                 
-               int id = results.getInt("MOVIE_ID");
+               String id = results.getString("id");
                 
-                String title = results.getString("MOVIETITLE");
+                String title = results.getString("TITLE");
                 String genre = results.getString("genre");
                 int year = results.getInt("MOVIE_YEAR");
                 
                 String description = results.getString("description");
-                int copies = results.getInt("copies");
+                int stock = results.getInt("stock");
                 
                 double price = results.getDouble("price");
                 
@@ -106,7 +107,7 @@ public class MovieDAO {
 
                Movie movie = new Movie( id,  title, 
                          genre,  year,  description, 
-                         copies,  price,movieImg);
+                         stock,  price,movieImg);
                 allMovieList.add(movie);
             }
             statement.close();
@@ -125,18 +126,18 @@ public class MovieDAO {
         
          // search by genre
         if(movieTitle.isEmpty()){
-                 sql = "SELECT * FROM dbadmin.movie where genre = '"+genreStr.trim()+"'";
+                 sql = "SELECT * FROM movie where genre = '"+genreStr.trim()+"'";
 
         }
         // search by title
         if(genreStr.isEmpty()){
-                 sql = "SELECT * FROM dbadmin.movie where movietitle = '"+movieTitle.trim()+"'";
+                 sql = "SELECT * FROM movie where TITLE = '"+movieTitle.trim()+"'";
 
         }
         // search by both genre and title
         if(!movieTitle.isEmpty()&&!genreStr.isEmpty()){
             
-          sql = "SELECT * FROM dbadmin.movie where movietitle = '"+movieTitle.trim() +"' AND genre = '"+genreStr.trim()+"'";
+          sql = "SELECT * FROM movie where TITLE = '"+movieTitle.trim() +"' AND genre = '"+genreStr.trim()+"'";
         }
         
         
@@ -150,21 +151,21 @@ public class MovieDAO {
             
             while (results.next()) {
                 
-               int id = results.getInt("MOVIE_ID");
+               String id = results.getString("id");
                 
-                String title = results.getString("MOVIETITLE");
+                String title = results.getString("TITLE");
                 String genre = results.getString("genre");
                 int year = results.getInt("MOVIE_YEAR");
                 
                 String description = results.getString("description");
-                int copies = results.getInt("copies");
+                int stock = results.getInt("stock");
                 
                 double price = results.getDouble("price");
                 byte[] movieImg = results.getBytes("MOVIE_IMG");
 
                Movie movie = new Movie( id,  title, 
                          genre,  year,  description, 
-                         copies,  price,movieImg);
+                         stock,  price,movieImg);
                 searchResult.add(movie);
             }
             statement.close();
@@ -176,32 +177,13 @@ public class MovieDAO {
 
     // see if certain movie exists, return false if not
     
-    public boolean isMovieExist(int ID) throws SQLException {
-        
-        String sql = "SELECT * FROM dbadmin.movie";
-        boolean isExist = false;
 
-        try (Statement statement = this.myConn.createStatement()) {
-            
-            ResultSet results = statement.executeQuery(sql);
-
-            while (results.next()) {
-                if (results.getInt("MOVIE_ID") == ID) {
-                    isExist = true;
-                    break;
-                }
-            }
-            statement.close();
-            results.close();
-        }
-        return isExist;
-    }
     
     // see if certain movie out of stock
     
-    public boolean movieHasStock(int ID) throws SQLException {
+    public boolean movieHasStock(int id) throws SQLException {
         
-        String sql = "SELECT * FROM APP.movie";
+        String sql = "SELECT * FROM movie";
         boolean hasStock = true;
 
         try (Statement statement = this.myConn.createStatement()) {
@@ -209,8 +191,8 @@ public class MovieDAO {
             ResultSet results = statement.executeQuery(sql);
 
             while (results.next()) {
-                if (results.getInt("MOVIE_ID") == ID) {
-                    if(results.getInt("copies")<=0){
+                if (results.getInt("id") == id) {
+                    if(results.getInt("stock")<=0){
                         hasStock = false;
                         break;
                     }
@@ -226,7 +208,7 @@ public class MovieDAO {
     // get number of all movies
     public int getMovieNumbers() throws SQLException{
         
-        String sql = "select * from dbadmin.movie ";
+        String sql = "select * from movie";
         int count = 0;
 
         try (Statement statement = this.myConn.createStatement()) {
@@ -238,6 +220,7 @@ public class MovieDAO {
             }
             statement.close();
             results.close();
+            
         }
         return count;
     
@@ -246,21 +229,23 @@ public class MovieDAO {
 
     // add a new movie
     public boolean addMovie(Movie movie) throws SQLException {
-        String sql = "INSERT INTO dbadmin.MOVIE"
-                + " (movie_id, movietitle,  genre,  movie_year,  description, copies,  price, movie_img) "
+        String sql = "INSERT INTO MOVIE"
+                + "(ID,TITLE,genre,movie_year,description,stock,  price, movie_img) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?,?)";
 
         
         boolean isAdded = false;
         
         try (PreparedStatement statement = this.myConn.prepareStatement(sql)) {
-             statement.setInt(1, movie.getMovieID());
+                    int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
+        String id = "" + key; 
+            statement.setString(1, id);
              
-            statement.setString(2, movie.getMovieTitle());
+            statement.setString(2, movie.getTitle());
             statement.setString(3, movie.getGenre());
             statement.setInt(4,  movie.getYear());
             statement.setObject(5, movie.getDescription());
-            statement.setInt(6, movie.getCopies());
+            statement.setInt(6, movie.getStock());
             statement.setDouble(7, movie.getPrice());
              statement.setBytes(8, movie.getMovieImg());
            
@@ -276,21 +261,21 @@ public class MovieDAO {
     //Edit and update movie in the databse:
     
     public boolean updateMovie(Movie movie) throws SQLException {
-        String sql = "UPDATE dbadmin.MOVIE SET movietitle = ?,genre = ?,  "
-                + "movie_year = ?, description = ?,copies = ?, price = ? "
-                + "WHERE movie_id = ?";
+        String sql = "UPDATE MOVIE SET TITLE = ?,genre = ?,  "
+                + "movie_year = ?, description = ?,stock = ?, price = ? "
+                + "WHERE id = ?";
         
 
         boolean isUpdated = false;
         
         try (PreparedStatement statement = this.myConn.prepareStatement(sql)) {
-            statement.setString(1, movie.getMovieTitle());
+            statement.setString(1, movie.getTitle());
             statement.setString(2, movie.getGenre());
             statement.setInt(3,  movie.getYear());
             statement.setObject(4, movie.getDescription());
-            statement.setInt(5, movie.getCopies());
+            statement.setInt(5, movie.getStock());
             statement.setDouble(6, movie.getPrice());
-            statement.setInt(7, movie.getMovieID());
+            statement.setString(7, movie.getId());
             
             isUpdated = statement.executeUpdate() > 0;
 
@@ -301,14 +286,14 @@ public class MovieDAO {
 
     //delete a movie from database
     
-    public boolean deleteMovie(int ID) throws SQLException {
+    public boolean deleteMovie(int id) throws SQLException {
         
-        String sql = "DELETE FROM dbadmin.movie WHERE movie_id = ?";
+        String sql = "DELETE FROM movie WHERE id = ?";
 
         boolean isDeleted = false;
         try (PreparedStatement statement = this.myConn.prepareStatement(sql)) {
             
-            statement.setInt(1, ID);
+            statement.setInt(1, id);
             
             isDeleted = statement.executeUpdate() > 0;
 

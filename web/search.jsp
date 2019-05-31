@@ -98,8 +98,8 @@
                
                 %>
                 <tr>
-                                <td><%= movie.getMovieID()%></td>
-                                <td><%= movie.getMovieTitle()%> </td>
+                                <td><%= movie.getId()%></td>
+                                <td><%= movie.getTitle()%> </td>
                                <td> <%= movie.getYear()%></td>
                                 <td><%= movie.getGenre()%></td>
                                 <td><%= movie.getPrice()%></td>

@@ -32,8 +32,8 @@ public class OrderDBManager {
         // Mock
         Order order = new Order();
         ArrayList<Movie> movies = new ArrayList();
-        movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
-        movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
+      //  movies.add(new Movie("1001", "The Avengers", "Action", "2011",40.55, 50, ""));
+       // movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
         order.setMovies(movies);
         order.setTotalPrice(60.55);
         order.setUserId("987654321");

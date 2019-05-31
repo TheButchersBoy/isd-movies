@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -177,18 +178,19 @@ public class MovieServlet extends HttpServlet {
         String description = request.getParameter("movieDescriptionInput");
         System.out.println( "description: "+ description);
         
-        int copies = Integer.parseInt(request.getParameter("movieCopiesInput"));
-        System.out.println( "copies: "+ copies);
+       int stock = Integer.parseInt(request.getParameter("moviestockInput"));
+        System.out.println( "stock: "+ stock);
         
-        double price = Double.parseDouble(request.getParameter("moviePriceInput"));
-        System.out.println( "price: "+ price);
+       double price = Double.parseDouble(request.getParameter("moviePriceInput"));
+       System.out.println( "price: "+ price);
         
-          int newMovieID = movieDAO.getMovieNumbers() + 1;
-          System.out.println("id:"+ newMovieID);
+
+          String newid = Integer.toString(movieDAO.getMovieNumbers() + 1);
+          System.out.println("id:"+ newid);
           
-   System.out.println("id:"+ newMovieID + " title:"+ title + 
+   System.out.println("id:"+ newid + " title:"+ title + 
                          " genre: "+ genre + "year: "+ year +"description:"+  description
-                         +"copy: "+ copies + " price:"+  price);
+                         +"stock: "+ stock + " price:"+  price);
    
         // Retrieves <input type="file" name="movieImgInput">
         
@@ -206,9 +208,9 @@ byte[] movieImg = IOUtils.toByteArray(fileContent);
 
       
         
-        Movie movie = new Movie(newMovieID, title, 
+        Movie movie = new Movie( newid, title, 
                          genre,  year,  description, 
-                         copies,  price,movieImg);
+                         stock,  price,movieImg);
         
         
         

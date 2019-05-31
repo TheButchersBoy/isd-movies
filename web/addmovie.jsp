@@ -100,7 +100,7 @@
                               <label for="movieCopiesInput">Movie Copies: </label>
                         </td>
                         <td>
-                                <input type="text" class="form-control" name="movieCopiesInput" id="movieCopiesInput" placeholder="1" required>
+                                <input type="text" class="form-control" name="moviestockInput" id="movieCopiesInput" placeholder="1" required>
               
                         </td>
                     </tr>

@@ -79,7 +79,7 @@
                         </div>
                     </a>
                    <br>
-                   Title: <%=movie.getMovieTitle()%>, Price: $<%=movie.getPrice()%>,Genre:<%=movie.getGenre()%>
+                   Title: <%=movie.getTitle()%>, Price: $<%=movie.getPrice()%>,Genre:<%=movie.getGenre()%>
                    <br>
                    <a href=""> Add to Cart </a>
                    
