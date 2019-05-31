@@ -6,9 +6,12 @@
 package uts.isd.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -16,6 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import uts.isd.model.Order;
+import uts.isd.model.Session;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.SessionsDBManager;
 
@@ -41,7 +46,7 @@ public class SessionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        conn = db.getConnection();
+        conn = db.openConnection();
         session.setAttribute("db", db);
         session.setAttribute("conn", conn);
         
@@ -55,9 +60,9 @@ public class SessionServlet extends HttpServlet {
             manager.initialiseSessions(session);
         }
         try {
-            //getSessions(request);
+            getSessions(request);
         } catch (Exception ex) {
-            Logger.getLogger(SessionServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
         
@@ -71,5 +76,27 @@ public class SessionServlet extends HttpServlet {
 //    private void clearSessions(HttpServletRequest request, HttpServletResponse response) {
 //        
 //    }
+
+    private void getSessions(HttpServletRequest request) throws SQLException, ParseException {
+        HttpSession session = request.getSession();
+        String userId = "987654321"; // TODO: get userID from session
+        ArrayList<Session> sessionList = manager.getSessions(userId);
+        
+        String dateFromFilter = request.getParameter("dateFrom");
+        String dateToFilter = request.getParameter("dateTo");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd, hh:mm:ss");
+
+        if (dateFromFilter != null && !dateFromFilter.isEmpty()) {
+            Date dateFrom = dateFormat.parse(dateFromFilter);
+            sessionList.removeIf(sessions -> sessions.getDate().before(dateFrom));
+        }
+
+        if (dateToFilter != null && !dateToFilter.isEmpty()) {
+            Date dateTo = dateFormat.parse(dateToFilter);
+            sessionList.removeIf(sessions -> sessions.getDate().after(dateTo));
+        }
+
+        session.setAttribute("sessionList", sessionList);
+    }
     
 }
