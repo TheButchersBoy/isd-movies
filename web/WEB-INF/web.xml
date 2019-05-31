@@ -23,7 +23,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Paymentservlet</servlet-name>
-        <url-pattern>/Paymentserclet</url-pattern>
+        <url-pattern>/Paymentservlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
