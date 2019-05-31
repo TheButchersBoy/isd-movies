@@ -51,9 +51,7 @@ public class UserServlet extends HttpServlet {
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        // TODO: Close connection?
+        }        
     }
 
     @Override
@@ -76,13 +74,11 @@ public class UserServlet extends HttpServlet {
             }
         } catch (IOException | SQLException | ServletException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        // TODO: Close connection?
+        }        
     }
     
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-        int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
+        int key = (new Random()).nextInt(999999);
         String id = "" + key; 
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
@@ -96,7 +92,8 @@ public class UserServlet extends HttpServlet {
         session.setAttribute("mobileFormVal", mobile);
         User user = new User(id, firstName, lastName, email, password, mobile);
         
-        if (validateUser(user, session)) {
+        Validator validator = new Validator();
+        if (validator.validateUser(user, true, session, manager)) {
             String encodedPassword = encodePassword(password);
             manager.addUser(id, email, encodedPassword, firstName, lastName, mobile);
             session.setAttribute("user", user);
@@ -131,7 +128,8 @@ public class UserServlet extends HttpServlet {
         String mobile = request.getParameter("mobile");
         User updatedUser = new User(id, firstName, lastName, email, password, mobile);
         
-        if (validateUser(updatedUser, session)) {
+        Validator validator = new Validator();
+        if (validator.validateUser(updatedUser, false, session, manager)) {
             session.setAttribute("user", updatedUser);
             manager.updateUser(id, email, firstName, lastName, mobile);
             session.setAttribute("showUpdateBanner", "show");
@@ -142,50 +140,35 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect("userDetails.jsp");
     }
     
-    private boolean validateUser(User user, HttpSession session) throws SQLException {
-        Validator validator = new Validator();
-        boolean inputsValid = true;
-                
-        if (!validator.validateName(user.getFirstName())) {
-            session.setAttribute("firstNameError", "Name must be alphabetical");
-            inputsValid = false;
-        } else {
-            session.setAttribute("firstNameError", null);
-        }
-        
-        if (!validator.validateName(user.getLastName())) {
-            session.setAttribute("lastNameError", "Name must be alphabetical");
-            inputsValid = false;
-        } else {
-            session.setAttribute("lastNameError", null);
-        }
-
-        if (!validator.validateEmail(user.getEmail())) {
-            session.setAttribute("emailError", "Must be a valid email. Eg. example@example.com");
-            inputsValid = false;
-        } else if (manager.doesUserExist(user.getEmail())){
-            session.setAttribute("emailError", "Email already registered");
-            inputsValid = false;
-        } else {
-            session.setAttribute("emailError", null);
-        }
-
-        if (!validator.validateMobile(user.getMobile())) { // TODO: Add mobile
-            session.setAttribute("mobileError", "Mobile must be between 8 and 15 numbers");
-            inputsValid = false;
-        } else {
-            session.setAttribute("mobileError", null);
-        }
-        
-        if (inputsValid == false || !validator.validatePassword(user.getPassword())) {
-            session.setAttribute("passwordError", "Password must be alphanumeric and over 8 characters");
-            inputsValid = false;
-        } else {
-            session.setAttribute("passwordError", null);
-        }
-        return inputsValid;
+    private void updatePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
+//        HttpSession session = request.getSession();
+//        // Get existing user details from user in session
+//        User existingUser = (User) session.getAttribute("user");
+//        // Get password to update from request
+//        String password = request.getParameter("password");
+//        String passwordConfirm = request.getParameter("passwordConfirm")
+//                
+//        String id = existingUser.getId();
+//        String password = existingUser.getPassword();
+//        // Get values to update from request
+//        String firstName = request.getParameter("firstName");
+//        String lastName = request.getParameter("lastName");
+//        String email = request.getParameter("email");
+//        String mobile = request.getParameter("mobile");
+//        User updatedUser = new User(id, firstName, lastName, email, password, mobile);
+//        
+//        Validator validator = new Validator();
+//        if (validator.validateUserPassword(updatedUser, false, session, manager)) {
+//            session.setAttribute("user", updatedUser);
+//            manager.updateUser(id, email, firstName, lastName, mobile);
+//            session.setAttribute("showUpdateBanner", "show");
+//        } else {
+//            session.setAttribute("showUpdateBanner", null);
+//        }
+//        // Send to user details page
+//        response.sendRedirect("userDetails.jsp");
     }
-    
+
     private String encodePassword(String password) {
         // Encode password using BASE64
         return Base64.encodeBase64String(password.getBytes());

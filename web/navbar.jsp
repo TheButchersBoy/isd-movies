@@ -1,8 +1,5 @@
 <%@page import="uts.isd.model.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<link rel="stylesheet" type="text/css" href="styles/bookList.css"/>	
 <link rel="stylesheet" type="text/css" href="styles/navBar.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <%
@@ -37,12 +34,12 @@
                 </li>
             <%} else {%>
                 <li class="orderhistory">
-                    <a id="orderhistorytext" href="orderHistory.jsp">
+                    <a href="orderHistory.jsp">
                         <span class="glyphicon glyphicon-list"> OrderHistory</span>
                     </a>
                 </li>
                 <li class="order">
-                    <a id="ordertext" href="order.jsp">
+                    <a href="order.jsp">
                         <span class="glyphicon glyphicon-shopping-cart"> Cart</span>
                     </a>
                 </li>

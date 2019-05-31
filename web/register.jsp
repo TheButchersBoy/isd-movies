@@ -88,7 +88,7 @@
                         <tr>
                             <td></td>
                             <td align="right">
-                                <input type="submit" class="btn btn-default" name="action" value="register"/>
+                                <input type="submit" class="btn btn-success" name="action" value="register"/>
                             </td>
                         </tr>
                     </table>
