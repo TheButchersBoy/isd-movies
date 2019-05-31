@@ -19,6 +19,7 @@ public class UserDBManagerTest {
     private static DBConnector db;
     private static Connection conn;
     private static UserDBManager manager;
+    private static String userId = "999999999";
     
     public UserDBManagerTest() {
     }
@@ -50,6 +51,12 @@ public class UserDBManagerTest {
     
     @After
     public void tearDown() {
+        try {
+            PreparedStatement deleteTestUser = conn.prepareStatement("DELETE FROM USERS WHERE ID = '" + userId + "'");
+            deleteTestUser.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBManagerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test
@@ -63,10 +70,6 @@ public class UserDBManagerTest {
         // check user does exist
         doesUserExist = manager.doesUserExist(email);
         assertEquals(doesUserExist, true);
-        
-        // clean up
-        PreparedStatement deleteTestUserMovie = conn.prepareStatement("DELETE FROM USERS WHERE ID = '999999999'");
-        deleteTestUserMovie.executeUpdate();
     }
     
     @Test
@@ -88,9 +91,5 @@ public class UserDBManagerTest {
         assertEquals(user.getFirstName(), firstName);
         assertEquals(user.getLastName(), lastName);
         assertEquals(user.getMobile(), mobile);
-        
-        // clean up
-        PreparedStatement deleteTestUserMovie = conn.prepareStatement("DELETE FROM USERS WHERE ID = '999999999'");
-        deleteTestUserMovie.executeUpdate();
     }
 }
