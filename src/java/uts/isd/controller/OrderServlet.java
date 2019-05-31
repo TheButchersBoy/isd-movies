@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import uts.isd.model.Movie;
 import uts.isd.model.Order;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.OrderDBManager;
@@ -38,7 +39,7 @@ public class OrderServlet extends HttpServlet {
         try {
             db = new DBConnector();
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -71,15 +72,23 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String action= request.getParameter("action");
+        String action = request.getParameter("action");
+        
+        clearErrors(request);
         
         try {
-            if ("Submit".equals(action)) {
+            if (action.equals("Submit")) {
                 submitOrder(request, response);
-            } else if ("Remove".equals(action)) {
-                removeMovie(request, response);
-            } else if ("Cancel".equals(action)) {
+            } else if (action.equals("Remove Movie")) {
+                removeMovieFromOrderSession(request, response);
+            } else if (action.equals("Clear")) {
+                clearOrder(request, response);
+            } else if (action.equals("Cancel")) {
                 cancelOrder(request, response);
+            } else if (action.equals("Save")) {
+                saveOrder(request, response);
+            } else if (action.equals("Remove")) {
+                removeMovie(request, response);
             }
         } catch (Exception ex) {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,16 +107,52 @@ public class OrderServlet extends HttpServlet {
     private void submitOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
-            
-        Order order = (Order)session.getAttribute("order");
-        orderDBManager.addOrder(order.getUserId(), order.getMovies(), order.getTotalPrice());
-
-        session.setAttribute("order", new Order());
+        String orderId = request.getParameter("orderId");
+        ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders");
         
-        response.sendRedirect("orderAction.jsp");
+        for (Order order: orders) {
+            if (order.getId().equals(orderId)) {
+                orderDBManager.submitOrder(order.getId());
+                response.sendRedirect("orderHistory.jsp");
+            }
+        }
     }
     
-    private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void saveOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        HttpSession session = request.getSession();
+        OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
+        String userId = "987654321"; // TODO: get userId from session
+            
+        Order order = (Order)session.getAttribute("order");
+        
+        if (order.getMovies().size() > 0) {
+            boolean containsOutOfStockMovie = false;
+            
+            for (Movie movie: order.getMovies()) {
+                if (movie.getStock() < 1) {
+                    containsOutOfStockMovie = true;
+                }
+            }
+            
+            if (!containsOutOfStockMovie) {
+                orderDBManager.addOrder(userId, order.getMovies(), order.getTotalPrice());
+
+                session.setAttribute("order", new Order());
+
+                response.sendRedirect("orderHistory.jsp");
+            } else {
+                session.setAttribute("outOfStockError", "error");
+                
+                response.sendRedirect("order.jsp");
+            }
+            
+        } else {
+            session.setAttribute("saveOrderError", "error");
+            response.sendRedirect("order.jsp");
+        }
+    }
+    
+    private void clearOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         
         session.setAttribute("order", new Order());
@@ -115,7 +160,48 @@ public class OrderServlet extends HttpServlet {
         response.sendRedirect("order.jsp");
     }
     
-    private void removeMovie(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        HttpSession session = request.getSession();
+        String orderId = request.getParameter("orderId");
+        ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders");
+        
+        for (Order order: orders) {
+            if (order.getId().equals(orderId)) {
+                if (order.isCancellable()) {
+                    manager.cancelOrder(orderId);
+                }
+                else {
+                    session.setAttribute("cancelOrderErrorId", order.getId());
+                } 
+                
+                response.sendRedirect("orderHistory.jsp");
+            }
+        }
+    }
+    
+    private void removeMovie(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        HttpSession session = request.getSession();
+        OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
+        String orderId = request.getParameter("orderId");
+        String movieId = request.getParameter("movieId");
+        ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders");
+        
+        for (Order order: orders) {
+            if (order.getId().equals(orderId)) {
+                if (order.getMovies().size() > 1) {
+                    order.removeMovie(movieId);
+                    order.updateTotalPrice();
+                    orderDBManager.removeMovie(orderId, movieId, order.getTotalPrice());
+                } else {
+                    session.setAttribute("removeMovieErrorId", orderId);
+                }
+            }
+            
+            response.sendRedirect("orderHistory.jsp");
+        }
+    }
+    
+    private void removeMovieFromOrderSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         String movieId = request.getParameter("movieId");
         Order order = (Order)session.getAttribute("order");
@@ -130,8 +216,9 @@ public class OrderServlet extends HttpServlet {
     
     private void getOrders(HttpServletRequest request) throws SQLException, ParseException {
         HttpSession session = request.getSession();
+        String userId = "987654321"; // TODO: get userID from session
         
-        ArrayList<Order> orders = manager.getOrders();
+        ArrayList<Order> orders = manager.getOrders(userId);
         String orderIdFilter = request.getParameter("orderId");
         String dateFromFilter = request.getParameter("dateFrom");
         String dateToFilter = request.getParameter("dateTo");
@@ -152,5 +239,14 @@ public class OrderServlet extends HttpServlet {
         }
 
         session.setAttribute("orders", orders);
+    }
+    
+    private void clearErrors(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        
+        session.removeAttribute("removeMovieErrorId");
+        session.removeAttribute("cancelOrderErrorId");
+        session.removeAttribute("removeMovieErrorId");
+        session.removeAttribute("outOfStockError");
     }
 }

@@ -2,11 +2,13 @@ package uts.isd.controller;
 
 import org.apache.commons.codec.binary.Base64;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -51,13 +53,13 @@ public class UserServlet extends HttpServlet {
             }
         } catch (IOException | SQLException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+            throws ServletException, IOException{
+               
         HttpSession session = request.getSession();
         conn = db.openConnection();   
         manager = new UserDBManager(conn); 
@@ -67,16 +69,41 @@ public class UserServlet extends HttpServlet {
                 
         try {
             String action = request.getParameter("action");
-            if("register".equals(action)) {
+            if("login".equals(action)) {
+                login(request, response);
+            } else if("register".equals(action)) {
                 registerUser(request, response);
             } else if("update".equals(action)){
                 updateUserDetails(request, response);
             }
         } catch (IOException | SQLException | ServletException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
     }
     
+    void login(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException {
+        try{
+            String email = (String) request.getParameter("email");
+            String password = (String) request.getParameter("password");
+            String encodedPassword = encodePassword(password);
+            User user = manager.login(email, encodedPassword);
+            if(user.getEmail() != null) {
+                // Decode password
+                String decodedPassword = decodePassword(user.getPassword());
+                user.setPassword(decodedPassword);
+                HttpSession session = request.getSession(true);
+                session.setAttribute("user", user);
+                response.sendRedirect("loginWelcome.jsp");
+            }
+            else
+                response.sendRedirect("index.jsp");
+        }    
+        catch (IOException theException) {
+            System.out.println(theException);
+        }
+    }
+
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         int key = (new Random()).nextInt(999999);
         String id = "" + key; 
