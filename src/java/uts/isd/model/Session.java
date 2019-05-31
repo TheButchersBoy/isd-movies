@@ -13,15 +13,12 @@ import java.util.Date;
 public class Session {
     private String id;
     private Date date;
-    private long loginTime;
-    private long logoutTime;
     
+    public Session() {}
     
-    public Session(String id, Date date, long loginTime, long logoutTime) {
+    public Session(String id, Date date) {
         this.id = id;
         this.date = date;
-        this.loginTime = loginTime;
-        this.logoutTime = logoutTime;
     }
     
     public String getId() {
@@ -39,23 +36,6 @@ public class Session {
     public void setDate(Date date) {
         this.date = date;
     }
-    
-    public long getLoginTime() {
-        return loginTime;
-    }
-    
-    public void setLoginTime(long loginTime) {
-        this.loginTime = loginTime;
-    }
-    
-    public long getLogoutTime() {
-        return logoutTime;
-    }
-    
-    public void setLogoutTime(long logoutTime) {
-        this.logoutTime = logoutTime;
-    }
-    
     
     
     

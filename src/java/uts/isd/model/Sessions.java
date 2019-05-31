@@ -13,9 +13,11 @@ import java.util.ArrayList;
  */
 public class Sessions {
     private ArrayList<Session> sessions;
+    private String userId;
     
-    public Sessions (ArrayList<Session> sessions) {
+    public Sessions (ArrayList<Session> sessions, String userId) {
         this.sessions = sessions;
+        this.userId = userId;
     }
     
     public ArrayList<Session> getSessions() {
@@ -25,4 +27,13 @@ public class Sessions {
     public void setSessions(ArrayList<Session> sessions) {
         this.sessions = sessions;
     }
+    
+    public String getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(String userId){
+        this.userId = userId;
+    }
+            
 }

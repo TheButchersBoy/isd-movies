@@ -17,16 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import uts.isd.model.dao.DBConnector;
-import uts.isd.model.dao.OrderDBManager;
+import uts.isd.model.dao.SessionsDBManager;
 
 /**
  *
  * @author Kyle Zeng
  */
 public class SessionServlet extends HttpServlet {
-    
     private DBConnector db;
-    private OrderDBManager manager;
+    private SessionsDBManager manager;
     private Connection conn;
     
     @Override
@@ -46,20 +45,26 @@ public class SessionServlet extends HttpServlet {
         session.setAttribute("db", db);
         session.setAttribute("conn", conn);
         
-        
+        try {
+            manager = new SessionsDBManager(conn);
+            session.setAttribute("sessionsDBManager",manager);
+        } catch (Exception ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (session.getAttribute("sessions") == null) {
+            manager.initialiseSessions(session);
+        }
     }
-
-
+        
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-    }
-
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+//        if ("clearSessions".equals(action)) {
+//                clearSessions(request, response);
+//    }
+ }
+//    private void clearSessions(HttpServletRequest request, HttpServletResponse response) {
+//        
+//    }
+    
 }
