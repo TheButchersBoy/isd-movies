@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="styles/navBar.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <%
-    User userNav = (User) session.getAttribute("currentSessionUser");
+    User userNav = (User) session.getAttribute("user");
 %>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">

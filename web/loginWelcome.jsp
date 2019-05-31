@@ -15,7 +15,7 @@
     <body>
         <div class="container">
             <h1 style="text-align: center">  
-                <% User currentUser = (User)session.getAttribute("currentSessionUser"); %>
+                <% User currentUser = (User)session.getAttribute("user"); %>
                 Welcome Back, <%= currentUser.getFirstName() + " " + currentUser.getLastName() %>
             </h1>
             <div style="text-align: center">

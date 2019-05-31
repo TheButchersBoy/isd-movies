@@ -63,27 +63,6 @@ public class DBManager {
         }
     }
     
-    //Find User
-    public User findUser(String email, String password) throws SQLException {
-        String searchQueryString = "select * from Users where email='" + email + "'AND password='" + password + "'";
-        ResultSet rs = st.executeQuery(searchQueryString);
-        boolean hasUser = rs.next();
-        User userFromDB = null;
-        
-        if(hasUser) {
-            String sID = rs.getString("id");
-            String sPassword = rs.getString("password");
-            String sEmail = rs.getString("email");
-            String sFirstName = rs.getString("firstName");
-            String sLastName = rs.getString("lastName");
-            String sMobile = rs.getString("mobile");
-            
-            userFromDB = new User (sID, sPassword, sEmail, sFirstName, sLastName, sMobile);
-        }
-    rs.close();
-    return userFromDB;
-    }
-    
     public boolean checkUser (String email, String password) throws SQLException {
         String sql = "select * from Users where email='" + email + "'AND password='" + password + "'";
         PreparedStatement insertUser = conn.prepareStatement(sql);

@@ -21,7 +21,7 @@
         <form action="SessionServlet" method="GET">
         <div>
             <h1 style="text-align: center">  
-                <% User currentUser = (User)session.getAttribute("currentSessionUser"); %>
+                <% User currentUser = (User)session.getAttribute("user"); %>
                 Here is your Sessions History, <%= currentUser.getFirstName() + " " + currentUser.getLastName() %>
             </h1>             
         <% Sessions sessions = (Sessions)pageContext.getAttribute("sessions"); %>

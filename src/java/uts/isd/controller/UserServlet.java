@@ -17,8 +17,6 @@ import javax.servlet.http.HttpSession;
 import uts.isd.Validator;
 import uts.isd.model.User;
 import uts.isd.model.dao.DBConnector;
-import uts.isd.model.dao.DBManager;
-import uts.isd.model.dao.UserDAO;
 import uts.isd.model.dao.UserDBManager;
 
 public class UserServlet extends HttpServlet {
@@ -85,16 +83,18 @@ public class UserServlet extends HttpServlet {
     }
     
      void login(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         try{
-            User user = new User();
-            user.setEmail(request.getParameter("email"));
-            user.setPassword(request.getParameter("password"));
-
-            user = UserDAO.login(user);
-            if(user.isValid()) {
+            String email = (String) request.getParameter("email");
+            String password = (String) request.getParameter("password");
+            String encodedPassword = encodePassword(password);
+            User user = manager.login(email, encodedPassword);
+            if(user.getEmail() != null) {
+                // Decode password
+                String decodedPassword = decodePassword(user.getPassword());
+                user.setPassword(decodedPassword);
                 HttpSession session = request.getSession(true);
-                session.setAttribute("currentSessionUser", user);
+                session.setAttribute("user", user);
                 response.sendRedirect("loginWelcome.jsp");
             }
             else
