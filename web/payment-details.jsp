@@ -4,8 +4,11 @@
     Author     : Frank
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="uts.isd.model.dao.*"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="uts.isd.model.*"%>
 <%@include file="navbar.jsp" %>
+<c:import url="/Paymentservlet" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,42 +16,29 @@
         <title>Payment Details</title>
     </head>
     <body>
+        <%  
+            ArrayList<Payment> payments = (ArrayList<Payment>)session.getAttribute("payments"); 
+            String paymentId = request.getParameter("paymentId");
+            String date = request.getParameter("date");
+        %>
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 3rem">Payment Details</h1>
-            <h3 style="margin-bottom: 2rem">Payment History</h3>
+            <h3 style="margin-bottom: 2rem">Payment List</h3>
             <div style="width: 100%">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" style="display: flex;">
-                        <div style="flex-grow: 1">
-                            <h4>Payment #00000001</h4>
-                            <p style="margin-bottom: 0">10/10/2018</p>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: center">
-                            <p><b>$40</b></p>
-                            <p><b>Cards</b></p>
-                        </div>
-                    </li>
-                    <li class="list-group-item" style="display: flex;">
-                        <div style="flex-grow: 1">
-                            <h4>Payment #00000002</h4>
-                            <p style="margin-bottom: 0">10/10/2018</p>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: center">
-                            <p><b>$20</b></p>
-                            <p><b>Paypal</b></p>
-                        </div>
-                    </li>
-                    <li class="list-group-item" style="display: flex;">
-                        <div style="flex-grow: 1">
-                            <h4>Payment #00000003</h4>
-                            <p style="margin-bottom: 0">10/10/2018</p>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: center">
-                            <p><b>$20</b></p>
-                            <p><b>Bpay</b></p>
-                        </div>
-                    </li>
-                </ul>
+                <table class='table' width="100%" border="2">
+                    <tr>    <th>Payment id</th>
+                       	<th>Date</th>
+                         <th>Amount</th>
+                	<th>Method</th>  </tr>
+                    <tr>
+                    <c:forEach items="<%= payments %>" var="payment">
+                        <% Payment payment = (Payment)pageContext.getAttribute("payment"); %>
+                        <td><%= payment.getId() %></td>
+                       	<td><%= payment.getDate() %></td>
+                         <td>$<%= payment.getAmount() %></td>
+                	<td><%= payment.getMethod() %></td>  </tr>
+                    </c:forEach>
+                </table>
             </div>
         </div>
     </body>

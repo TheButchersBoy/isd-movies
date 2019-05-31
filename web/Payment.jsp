@@ -4,57 +4,36 @@
     Author     : Frank
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="uts.isd.model.Payment"%>
+<%@page import="uts.isd.model.dao.PaymentDBManager"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="navbar.jsp" %>
+<c:import url="/Paymentservlet" />
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Payment</title>
     </head>
     <body>
+        <%  
+            ArrayList<Payment> payments = (ArrayList<Payment>)session.getAttribute("payments"); 
+        %>
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
-            <h1 style="margin-bottom: 4rem">Bill Lists</h1>
+            <h1 style="margin-bottom: 4rem">Bill list</h1>
             <div style="display: flex">
-                <div style="width: 100%; margin-right: 4rem">
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item" style="display: flex;">
-                          <div style="flex-grow: 1">
-                              <h4>Movie Title</h4>
-                              <p>$20</p>
-                          </div>
-                          <div style="display: flex; align-items: center">
-                              <button type="button" class="btn btn-danger">
-                                  Remove
-                              </button>
-                          </div>
-                      </li>
-                      <li class="list-group-item" style="display: flex;">
-                          <div style="flex-grow: 1">
-                              <h4>Movie Title</h4>
-                              <p>$20</p>
-                          </div>
-                          <div style="display: flex; align-items: center">
-                              <button type="button" class="btn btn-danger">
-                                  Remove
-                              </button>
-                          </div>
-                      </li>
-                      <li class="list-group-item" style="display: flex;">
-                          <div style="flex-grow: 1">
-                              <h4>Total Payment</h4>
-                              <p>$40</p>
-                          </div>
-                          <div style="display: flex; align-items: center">
-                              <div style="display: flex; justify-content: flex-end">
-                            <button type="button" class="btn btn-danger" style="margin-right: 1rem">
-                                Cancel
-                            </button>
-                            <button type="button" class="btn btn-primary">
-                                Confirm Payment
-                            </button>
-                          </div>
-                      </li> 
-                    </ul>
+                <div class="panel panel-default" style="width: 75%;  padding-left: 1rem; padding-right: 1rem; display: flex;">
+                    <div class="panel-body" style="display: flex; flex-direction: column; flex-grow: 1">
+                        <h3 style="margin-top: 1rem; margin-bottom: 2rem;">Payment details</h3>
+                        <div style="display: flex">
+                            <% Payment payment = (Payment)pageContext.getAttribute("payment"); %>
+                            <p style="flex-grow: 1">Total Amount</p>
+                            <p>$ </p>
+                        </div>
+                        <form action="Paymentservlet" method="post" style="display: flex; justify-content: flex-end; margin-bottom: 0">
+                            <input type="submit" class="btn btn-primary" name="action" value="Confirm Payment">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

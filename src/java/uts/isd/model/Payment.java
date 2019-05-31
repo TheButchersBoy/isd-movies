@@ -5,6 +5,7 @@
  */
 package uts.isd.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -14,15 +15,16 @@ import java.util.Date;
 public class Payment {
     
     private int id;
+    private ArrayList<Payment> payments;
     private Double amount;
-    private Double totalAmount;
     private Date date;
     private String method;
     
     public Payment() {}
 
-    public Order(int id, Double amount, Double totalAmount, Date date, String method) {
+    public Payment(int id, Double amount, Date date, String method) {
         this.id = id;
+        this.payments = payments;
         this.amount = amount;
         this.date = date;
         this.method = method;
@@ -35,17 +37,21 @@ public class Payment {
     public void setId(int id) {
         this.id = id;
     }
+    
+    public ArrayList<Payment> getPayments() {
+        return payments;
+    }
 
-    public Double getAomunt() {
+    public void setPayments(ArrayList<Payment> payments) {
+        this.payments = payments;
+    }
+
+    public Double getAmount() {
         return amount;
     }
-
-    public Double getTotalAomunt() {
-        return totalAmount;
-    }
-
-    public void setTotalPrice(Double totalPrice) {
-        this.totalAmount = totalAmount;
+    
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public Date getDate() {
@@ -54,5 +60,27 @@ public class Payment {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+    
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+    
+    public void removePayment(String paymentId) {
+        payments.removeIf(payment -> paymentId.equals(payment.getId()));
+    }
+    
+    public void updateAmount() {
+        Double price = 0.0;
+        
+        for (Payment payment: payments) {
+            price += payment.getAmount();
+        }
+        
+        amount = price;
     }
 }
