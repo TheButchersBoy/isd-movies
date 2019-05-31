@@ -38,7 +38,7 @@ public class OrderServlet extends HttpServlet {
         try {
             db = new DBConnector();
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -71,17 +71,23 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String action= request.getParameter("action");
+        String action = request.getParameter("action");
+        
+        clearErrors(request);
         
         try {
             if (action.equals("Submit")) {
                 submitOrder(request, response);
-            } else if (action.equals("Remove")) {
-                removeMovie(request, response);
+            } else if (action.equals("Remove Movie")) {
+                removeMovieFromOrderSession(request, response);
             } else if (action.equals("Clear")) {
                 clearOrder(request, response);
             } else if (action.equals("Cancel")) {
                 cancelOrder(request, response);
+            } else if (action.equals("Save")) {
+                saveOrder(request, response);
+            } else if (action.equals("Remove")) {
+                removeMovie(request, response);
             }
         } catch (Exception ex) {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,13 +106,33 @@ public class OrderServlet extends HttpServlet {
     private void submitOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
+        String orderId = request.getParameter("orderId");
+        ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders");
+        
+        for (Order order: orders) {
+            if (order.getId().equals(orderId)) {
+                orderDBManager.submitOrder(order.getId());
+                response.sendRedirect("orderHistory.jsp");
+            }
+        }
+    }
+    
+    private void saveOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        HttpSession session = request.getSession();
+        OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
             
         Order order = (Order)session.getAttribute("order");
-        orderDBManager.addOrder(order.getUserId(), order.getMovies(), order.getTotalPrice());
-
-        session.setAttribute("order", new Order());
         
-        response.sendRedirect("orderAction.jsp");
+        if (order.getMovies().size() > 0) {
+            orderDBManager.addOrder(order.getUserId(), order.getMovies(), order.getTotalPrice());
+
+            session.setAttribute("order", new Order());
+
+            response.sendRedirect("orderHistory.jsp");
+        } else {
+            session.setAttribute("saveOrderError", "error");
+            response.sendRedirect("order.jsp");
+        }
     }
     
     private void clearOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -118,14 +144,47 @@ public class OrderServlet extends HttpServlet {
     }
     
     private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        HttpSession session = request.getSession();
         String orderId = request.getParameter("orderId");
+        ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders");
         
-        manager.cancelOrder(orderId);
-        
-        response.sendRedirect("orderHistory.jsp");
+        for (Order order: orders) {
+            if (order.getId().equals(orderId)) {
+                if (order.isCancellable()) {
+                    manager.cancelOrder(orderId);
+                }
+                else {
+                    session.setAttribute("cancelOrderErrorId", order.getId());
+                } 
+                
+                response.sendRedirect("orderHistory.jsp");
+            }
+        }
     }
     
-    private void removeMovie(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void removeMovie(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        HttpSession session = request.getSession();
+        OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
+        String orderId = request.getParameter("orderId");
+        String movieId = request.getParameter("movieId");
+        ArrayList<Order> orders = (ArrayList<Order>)session.getAttribute("orders");
+        
+        for (Order order: orders) {
+            if (order.getId().equals(orderId)) {
+                if (order.getMovies().size() > 1) {
+                    order.removeMovie(movieId);
+                    order.updateTotalPrice();
+                    orderDBManager.removeMovie(orderId, movieId, order.getTotalPrice());
+                } else {
+                    session.setAttribute("removeMovieErrorId", orderId);
+                }
+            }
+            
+            response.sendRedirect("orderHistory.jsp");
+        }
+    }
+    
+    private void removeMovieFromOrderSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         String movieId = request.getParameter("movieId");
         Order order = (Order)session.getAttribute("order");
@@ -162,5 +221,13 @@ public class OrderServlet extends HttpServlet {
         }
 
         session.setAttribute("orders", orders);
+    }
+    
+    private void clearErrors(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        
+        session.removeAttribute("removeMovieErrorId");
+        session.removeAttribute("cancelOrderErrorId");
+        session.removeAttribute("removeMovieErrorId");
     }
 }

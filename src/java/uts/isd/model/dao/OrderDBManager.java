@@ -60,7 +60,7 @@ public class OrderDBManager {
         addOrder.setString(2, userId);
         addOrder.setDouble(3, totalPrice);
         addOrder.setDate(4, new java.sql.Date(new Date().getTime()));
-        addOrder.setString(5, "Submitted");
+        addOrder.setString(5, "Saved");
         
         addOrder.executeUpdate();
         
@@ -85,10 +85,25 @@ public class OrderDBManager {
     public void cancelOrder(String orderId) throws SQLException {
         String cancelOrderSql = "UPDATE ORDERS SET STATUS = 'Cancelled' WHERE ID = ?";
         PreparedStatement cancelOrder = conn.prepareStatement(cancelOrderSql);
-        
         cancelOrder.setString(1, orderId);
         
         cancelOrder.executeUpdate();
+        
+        String getOrderMoviesSql = "SELECT MOVIEID FROM ORDER_MOVIE WHERE ORDERID = ?";
+        PreparedStatement getOrderMovieIds = conn.prepareStatement(getOrderMoviesSql);
+        getOrderMovieIds.setString(1, orderId);
+        
+        ResultSet movieIdsResultSet = getOrderMovieIds.executeQuery();
+        
+        while(movieIdsResultSet.next()) {
+            String movieId = movieIdsResultSet.getString("MOVIEID");
+            String updateMovieStockSql = "UPDATE MOVIES SET STOCK = STOCK + 1 WHERE ID = ?";
+            PreparedStatement updateMovieStock = conn.prepareStatement(updateMovieStockSql);
+            
+            updateMovieStock.setString(1, movieId);
+            
+            updateMovieStock.executeUpdate();
+        }
     }
     
     public ArrayList<Order> getOrders() throws SQLException {
@@ -96,7 +111,7 @@ public class OrderDBManager {
         String ordersSql = "SELECT * FROM ORDERS ORDER BY DATE DESC";
         PreparedStatement getOrders = conn.prepareStatement(ordersSql);
         
-        ArrayList<Order> orders = new ArrayList<Order>();
+        ArrayList<Order> orders = new ArrayList();
         ResultSet resultSet = getOrders.executeQuery();
         
         while(resultSet.next()) {
@@ -121,7 +136,7 @@ public class OrderDBManager {
             getOrderMovie.setString(1, order.getId());
             
             ResultSet getOrderMovieResult = getOrderMovie.executeQuery();
-            ArrayList<Movie> movies = new ArrayList<Movie>();
+            ArrayList<Movie> movies = new ArrayList();
             
             while(getOrderMovieResult.next()) {
                 Movie movie = new Movie();
@@ -138,5 +153,36 @@ public class OrderDBManager {
         }
         
         return orders;
+    }
+    
+    public void submitOrder(String orderId) throws SQLException {
+        String submitOrderSql = "UPDATE ORDERS SET STATUS = 'Submitted' WHERE ID = ?";
+        PreparedStatement submitOrder = conn.prepareStatement(submitOrderSql);
+        submitOrder.setString(1, orderId);
+        
+        submitOrder.executeUpdate();
+    }
+    
+    public void removeMovie(String orderId, String movieId, Double totalPrice) throws SQLException {
+        String removeMovieSql = "DELETE FROM ORDER_MOVIE WHERE ORDERID = ? AND MOVIEID = ?";
+        PreparedStatement removeMovie = conn.prepareStatement(removeMovieSql);
+        removeMovie.setString(1, orderId);
+        removeMovie.setString(2, movieId);
+        
+        removeMovie.executeUpdate();
+        
+        String updateMovieTotalPriceSql = "UPDATE ORDERS SET TOTALPRICE = ? WHERE ID = ?";
+        PreparedStatement updateMovieTotalPrice = conn.prepareStatement(updateMovieTotalPriceSql);
+        updateMovieTotalPrice.setDouble(1, totalPrice);
+        updateMovieTotalPrice.setString(2, orderId);
+        
+        updateMovieTotalPrice.executeUpdate();
+        
+        String updateMovieStockSql = "UPDATE MOVIES SET STOCK = STOCK + 1 WHERE ID = ?";
+        PreparedStatement updateMovieStock = conn.prepareStatement(updateMovieStockSql);
+
+        updateMovieStock.setString(1, movieId);
+
+        updateMovieStock.executeUpdate();
     }
 }

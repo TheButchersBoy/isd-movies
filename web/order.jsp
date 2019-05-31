@@ -16,7 +16,10 @@
         <title>Order</title>
     </head>
     <body>
-        <%  Order order = (Order)session.getAttribute("order"); %>
+        <%  
+            Order order = (Order)session.getAttribute("order");
+            String saveOrderError = (String)session.getAttribute("saveOrderError");
+        %>
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 4rem">Your Order</h1>
             <div style="display: flex">
@@ -31,7 +34,7 @@
                                 </div>
                                 <form action="OrderServlet" method="post" style="display: flex; align-items: center; margin-bottom: 0">
                                     <input type="hidden" name="movieId" value="<%= movie.getId() %>">
-                                    <input type="submit" class="btn btn-danger" name="action" value="Remove">
+                                    <input type="submit" class="btn btn-danger" name="action" value="Remove Movie">
                                 </form>
                             </li>
                         </c:forEach>
@@ -40,13 +43,16 @@
                 <div class="panel panel-default" style="width: 50%;  padding-left: 1rem; padding-right: 1rem; display: flex;">
                     <div class="panel-body" style="display: flex; flex-direction: column; flex-grow: 1">
                         <h3 style="margin-top: 1rem; margin-bottom: 2rem;">Order details</h3>
-                        <div style="display: flex">
+                        <div style="display: flex; flex-grow: 1">
                             <p style="flex-grow: 1">Total price</p>
                             <p>$<%= String.format("%.2f", order.getTotalPrice()) %></p>
                         </div>
-                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; margin-bottom: 0">
+                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; margin: 0">
+                            <c:if test="<%= saveOrderError != null %>">
+                                <p style="color: red; flex-grow: 1">Unable to save order with no movies. Please add movie(s) to your order.</p>
+                            </c:if>
                             <input type="submit" class="btn btn-danger" style="margin-right: 1rem" name="action" value="Clear">
-                            <input type="submit" class="btn btn-primary" name="action" value="Submit">
+                            <input type="submit" class="btn btn-primary" name="action" value="Save">
                         </form>
                     </div>
                 </div>
