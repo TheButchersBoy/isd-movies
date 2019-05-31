@@ -164,35 +164,6 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect("userDetails.jsp"); // Send to user details page
     }
     
-    private void updatePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
-//        HttpSession session = request.getSession();
-//        // Get existing user details from user in session
-//        User existingUser = (User) session.getAttribute("user");
-//        // Get password to update from request
-//        String password = request.getParameter("password");
-//        String passwordConfirm = request.getParameter("passwordConfirm")
-//                
-//        String id = existingUser.getId();
-//        String password = existingUser.getPassword();
-//        // Get values to update from request
-//        String firstName = request.getParameter("firstName");
-//        String lastName = request.getParameter("lastName");
-//        String email = request.getParameter("email");
-//        String mobile = request.getParameter("mobile");
-//        User updatedUser = new User(id, firstName, lastName, email, password, mobile);
-//        
-//        Validator validator = new Validator();
-//        if (validator.validateUserPassword(updatedUser, false, session, manager)) {
-//            session.setAttribute("user", updatedUser);
-//            manager.updateUser(id, email, firstName, lastName, mobile);
-//            session.setAttribute("showUpdateBanner", "show");
-//        } else {
-//            session.setAttribute("showUpdateBanner", null);
-//        }
-//        // Send to user details page
-//        response.sendRedirect("userDetails.jsp");
-    }
-
     private String encodePassword(String password) {
         // Encode password using BASE64
         return Base64.encodeBase64String(password.getBytes());
