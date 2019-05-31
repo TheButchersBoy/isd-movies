@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -101,5 +102,43 @@ public class OrderDBManagerTest {
         ArrayList<Order> orders = manager.getOrders(userId);
         
         assertEquals(orders.size(), 1);
+    }
+
+    /**
+     * Test of cancelOrder method, of class OrderDBManager.
+     */
+    @Test
+    public void testCancelOrder() throws Exception {
+        manager.addOrder(userId, new ArrayList(), 10.0);
+        ArrayList<Order> orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        Order order = orders.get(0);
+        
+        manager.cancelOrder(order.getId());
+        
+        orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        order = orders.get(0);
+        
+        assertEquals(order.getStatus(), "Cancelled");
+    }
+
+    /**
+     * Test of submitOrder method, of class OrderDBManager.
+     */
+    @Test
+    public void testSubmitOrder() throws Exception {
+        manager.addOrder(userId, new ArrayList(), 10.0);
+        ArrayList<Order> orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        Order order = orders.get(0);
+        
+        manager.submitOrder(order.getId());
+        
+        orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        order = orders.get(0);
+        
+        assertEquals(order.getStatus(), "Submitted");
     }
 }
