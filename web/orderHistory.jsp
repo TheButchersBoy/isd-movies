@@ -22,6 +22,8 @@
             String orderId = request.getParameter("orderId");
             String dateFrom = request.getParameter("dateFrom");
             String dateTo = request.getParameter("dateTo");
+            String cancelOrderErrorId = (String)session.getAttribute("cancelOrderErrorId");
+            String removeMovieErrorId = (String)session.getAttribute("removeMovieErrorId");
         %>
         <div action="orderHistory.jsp" method="get" style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
             <h1 style="margin-bottom: 3rem">Order History</h1>
@@ -60,20 +62,34 @@
                                 <p style="margin-left: 1.5rem"><b>Movies</b></p>
                                 <c:forEach items="<%= order.getMovies() %>" var="movie">
                                     <% Movie movie = (Movie)pageContext.getAttribute("movie"); %>
-                                    <li class="list-group-item" style="display: flex; justify-content: space-between">
-                                        <p style="margin-bottom: 0"><%= movie.getTitle() %></p>
+                                    <li class="list-group-item" style="display: flex; align-items: center">
+                                        <p style="margin-bottom: 0; flex-grow: 1"><%= movie.getTitle() %></p>
                                         <p style="margin-bottom: 0">$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                        <c:if test="<%= order.getStatus().equals("Saved") %>">
+                                            <form action="OrderServlet" method="post" style="margin: 0; margin-left: 2rem">
+                                                <input type="hidden" name="orderId" value="<%= order.getId() %>">
+                                                <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                                                <input type="submit" class="btn btn-default" name="action" value="Remove"> 
+                                            </form> 
+                                        </c:if>
                                     </li>
                                 </c:forEach>
                             </ul>
-                            <c:if test="<%= !order.isCancelled() %>">
-                                <div class="panel-footer" style="display: flex; justify-content: flex-end">
-                                    <form action="OrderServlet" method="post" style="margin: 0">
-                                        <input type="hidden" name="orderId" value="<%= order.getId() %>">
-                                        <input type="submit" class="btn btn-default" name="action" value="Cancel"> 
-                                    </form>
-                                </div>
-                            </c:if>
+                            <div class="panel-footer">
+                                <form action="OrderServlet" method="post" style="margin: 0; display: flex; justify-content: flex-end; align-items: center">
+                                    <input type="hidden" name="orderId" value="<%= order.getId() %>">
+                                    <c:if test="<%= cancelOrderErrorId != null && cancelOrderErrorId.equals(order.getId()) %>">
+                                        <p style="color: red; flex-grow: 1">Unable to cancel a finalised order.</p>
+                                    </c:if>
+                                        <c:if test="<%= removeMovieErrorId != null && removeMovieErrorId.equals(order.getId()) %>">
+                                        <p style="color: red; flex-grow: 1">Unable to remove all movies in an order. Please cancel order instead.</p>
+                                    </c:if>
+                                    <c:if test="<%= order.getStatus().equals("Saved") %>">
+                                      <input type="submit" class="btn btn-primary" style="margin-right: 1rem" name="action" value="Submit">  
+                                    </c:if>
+                                    <input type="submit" class="btn btn-danger" name="action" value="Cancel"> 
+                                </form>
+                            </div>
                         </li>
                     </c:forEach>
                 </ul>

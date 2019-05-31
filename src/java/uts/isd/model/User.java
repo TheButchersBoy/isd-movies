@@ -2,8 +2,8 @@ package uts.isd.model;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
-        
+public class User implements Serializable{ // TODO: Do we need to implement Serializable for models?
+    
     private String id;
     private String firstName;
     private String lastName;
@@ -14,7 +14,7 @@ public class User implements Serializable{
     public User() {
         super();
     }
-    
+
     public User(String id, String firstName, String lastName, String email, String password, String mobile) {
         super();
         this.id = id;

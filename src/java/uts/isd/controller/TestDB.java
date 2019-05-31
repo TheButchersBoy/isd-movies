@@ -50,7 +50,7 @@ public class TestDB {
 
     private static void testGetOrders(OrderDBManager db) {
         try {
-            ArrayList<Order> orders = db.getOrders();
+            ArrayList<Order> orders = db.getOrders("987654321");
             for (Order order: orders) {
                 for (Movie movie: order.getMovies()) {
                     System.out.println(movie.getTitle());

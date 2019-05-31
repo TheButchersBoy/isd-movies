@@ -32,8 +32,11 @@ public class ConnServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");       
         HttpSession session = request.getSession();
         conn = db.openConnection();   
-        //TODO: don't need try catch yet
-        manager = new DBManager(conn); 
+        try {
+            manager = new DBManager(conn);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         session.setAttribute("db", db);
         session.setAttribute("manager", manager);
         session.setAttribute("conn", conn);
