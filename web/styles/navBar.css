@@ -4,22 +4,7 @@ span{
     font-size: medium;
     height: 20px;
 }
-#home, #login, #register{
-    background-color: #f4f4f4;
-    margin-bottom: 60px;
-}
-.navbar-texts, #managetext, #managebookstext, #reservetext, #logintext, #registertext, #edittext, #logouttext, #addtext{
+.navbar-texts {
     font-family: Arial, Helvetica, sans-serif;
     font-size: medium;
-}
-#home .home, #manage .manage, #managebooks .managebooks, #reserve .reserve, #login .login, #register .register, #edit .edit, #logout .logout, #add .add
-{
-    background-color: black;
-}
-#home .home .navbar-texts, #manage .manage #managetext, #managebooks .managebooks #managebookstext, #reserve .reserve #reservetext, #login .login #logintext, 
-#register .register #registertext, #edit .edit #edittext ,#logout .logout #logouttext, #add .add #addtext
-{
-    color: white;
-}.list-group {
-
 }

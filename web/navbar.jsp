@@ -1,8 +1,5 @@
 <%@page import="uts.isd.model.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<link rel="stylesheet" type="text/css" href="styles/bookList.css"/>
 <link rel="stylesheet" type="text/css" href="styles/navBar.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <%
@@ -17,17 +14,7 @@
         </div>
         <ul class="nav navbar-nav">
             <li class="categories">
-                
-                <a class="navbar-texts" href="category">Movie Category</a>
-              <!--  
-                <form id="form1" action="category" method="post">
-    
-                
-    <a id="hometext" href="javascript:;" onclick="document.getElementById('form1').submit();">Movie Category</a>
-                
-         </form>
-                -->
-                
+                <a class="navbar-texts" href="category">Movie Category</a>     
             </li>
             <li class="search">
                 <a class="navbar-texts" href="search.jsp">Search Movie</a>
@@ -50,12 +37,12 @@
                 </li>
             <%} else {%>
                 <li class="orderhistory">
-                    <a id="orderhistorytext" href="orderHistory.jsp">
+                    <a href="orderHistory.jsp">
                         <span class="glyphicon glyphicon-list"> OrderHistory</span>
                     </a>
                 </li>
                 <li class="order">
-                    <a id="ordertext" href="order.jsp">
+                    <a href="order.jsp">
                         <span class="glyphicon glyphicon-shopping-cart"> Cart</span>
                     </a>
                 </li>
