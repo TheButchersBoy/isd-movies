@@ -94,7 +94,7 @@ public class Order {
         this.status = status;
     }
     
-    public boolean isCancelled() {
-        return this.status.equals("Cancelled");
+    public boolean isCancellable() {
+        return this.status.equals("Saved");
     }
 }
