@@ -35,6 +35,7 @@ public class OrderServlet extends HttpServlet {
     private OrderDBManager manager;
     private Connection conn;
     
+    // Initialises db connector
     @Override
     public void init() {
         try {
@@ -44,6 +45,7 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Gets the user's order history and filters by date or id if applicable
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
@@ -69,6 +71,7 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Performs action based on the submitted action type
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -98,6 +101,7 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Closes the db connection
     @Override
     public void destroy() {
         try {
@@ -107,6 +111,7 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Calls db manager to submit order from request
     private void submitOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
@@ -121,6 +126,8 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Calls db manager to save order from request
+    // Validates if order contains out of stock movie or if user is not logged in to set error in session
     private void saveOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
@@ -137,12 +144,16 @@ public class OrderServlet extends HttpServlet {
                 }
             }
             
-            if (!containsOutOfStockMovie) {
+            if (!containsOutOfStockMovie && user != null) {
                 orderDBManager.addOrder(user.getId(), order.getMovies(), order.getTotalPrice());
 
                 session.setAttribute("order", new Order());
 
                 response.sendRedirect("orderHistory.jsp");
+            } else if (user == null) {
+                session.setAttribute("noUserError", "error");
+                
+                response.sendRedirect("order.jsp");
             } else {
                 session.setAttribute("outOfStockError", "error");
                 
@@ -155,6 +166,7 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Clears the order saved in session
     private void clearOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         
@@ -163,6 +175,8 @@ public class OrderServlet extends HttpServlet {
         response.sendRedirect("order.jsp");
     }
     
+    // Calls db manager to cancel order
+    // Validates whether order is cancellable and sets error in session if otherwise
     private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         HttpSession session = request.getSession();
         String orderId = request.getParameter("orderId");
@@ -182,6 +196,8 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Calls db manager to remove movie from order
+    // Validates if the last movie is to be removed and sets error if last movie is to be removed
     private void removeMovie(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         HttpSession session = request.getSession();
         OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
@@ -204,9 +220,14 @@ public class OrderServlet extends HttpServlet {
         }
     }
     
+    // Adds a movie into the order in session
     private void addMovieToOrderSession(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         Order order = (Order)session.getAttribute("order");
+        String movieId = request.getParameter("movieId");
+        String movieTitle = request.getParameter("movieTitle");
+        String moviePrice = request.getParameter("moviePrice");
+        String movieStock = request.getParameter("movieStock");
         Movie movie = new Movie();
         
         order.addMovie(movie);
@@ -217,6 +238,7 @@ public class OrderServlet extends HttpServlet {
         // TODO: send redirect to movies page
     }
     
+    // Removes a movie from the order in session
     private void removeMovieFromOrderSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         String movieId = request.getParameter("movieId");
@@ -230,6 +252,7 @@ public class OrderServlet extends HttpServlet {
         response.sendRedirect("order.jsp");
     }
     
+    // Calls db manager to retrieve all orders according to current user
     private void getOrders(HttpServletRequest request) throws SQLException, ParseException {
         HttpSession session = request.getSession();
         User user = (User)session.getAttribute("user");
@@ -257,6 +280,7 @@ public class OrderServlet extends HttpServlet {
         session.setAttribute("orders", orders);
     }
     
+    // Clears all order management related errors from the session
     private void clearErrors(HttpServletRequest request) {
         HttpSession session = request.getSession();
         
@@ -264,5 +288,6 @@ public class OrderServlet extends HttpServlet {
         session.removeAttribute("cancelOrderErrorId");
         session.removeAttribute("removeMovieErrorId");
         session.removeAttribute("outOfStockError");
+        session.removeAttribute("noUserError");
     }
 }
