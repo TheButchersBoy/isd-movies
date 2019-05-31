@@ -36,7 +36,7 @@ public class Movie {
     }
     
 
-    public Movie(String movie_ID, String movieTitle, String genre, int year, String description, int stock, double price,byte[]movieImg) {
+    public Movie(String id, String title, String genre, int year, String description, int stock, double price,byte[]movieImg) {
         this.id = id;
         this.title = title;
         this.genre = genre;
@@ -46,10 +46,9 @@ public class Movie {
         this.price = price;
         this.movieImg = movieImg;
         
-       // byte[] base64 = Base64.
-        base64Image = Base64.getEncoder().encodeToString(movieImg);
-        
-        
+        if (movieImg != null) {
+            base64Image = Base64.getEncoder().encodeToString(movieImg);
+        }
     }
 
     public void setBase64Image(String base64Image) {
