@@ -5,9 +5,10 @@
  */
 package uts.isd.model;
 
+import java.util.Base64;
 /**
  *
- * @author jessicawiradinata
+ * @author jessicawiradinata,Alvin
  */
 public class Movie {
     
@@ -17,16 +18,23 @@ public class Movie {
     private Double price;
     private int stock;
     private String genre;
+    private int year;
+    private byte[] movieImg; //removed movie picture for easier management. can be implemented later.
+    
+     private String base64Image;
     
     public Movie() {}
 
-    public Movie(String id, String title, String description, Double price, int stock, String genre) {
+    public Movie(String id, String title, String description, Double price,int year ,int stock, String genre,byte[]movieImg) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.genre = genre;
+        this.year = year;
+        this.movieImg = movieImg;
+         base64Image = Base64.getEncoder().encodeToString(movieImg);
     }
 
     public String getId() {
@@ -77,4 +85,24 @@ public class Movie {
         this.genre = genre;
     }
     
+    
+        public int getYear() {
+        return year;
+    }
+        
+        
+        public void setYear(int year) {
+        this.year = year;
+    }
+    
+        public byte[] getMovieImg() {
+        return movieImg;
+    }
+    
+        public void setMovieImg(byte[] movieImg) {
+        this.movieImg = movieImg;
+        base64Image = Base64.getEncoder().encodeToString(movieImg);
+    }        
+            
+            
 }
