@@ -78,7 +78,7 @@ public class OrderDBManagerTest {
 
         manager.addOrder(userId, movies, totalPrice);
         
-        ArrayList<Order> orders = manager.getOrders();
+        ArrayList<Order> orders = manager.getOrders(userId);
         orders.removeIf(order -> !order.getUserId().equals(userId));
         Order expectedOrder = orders.get(0);
         expectedOrder.getMovies().forEach(movie -> System.out.println("expected " + movie.getTitle()));

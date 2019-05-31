@@ -34,8 +34,9 @@ public class OrderDBManager {
         ArrayList<Movie> movies = new ArrayList();
         movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
         movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
+        movies.add(new Movie("1003", "Titanic", "", 15.0, 0, "Drama"));
         order.setMovies(movies);
-        order.setTotalPrice(60.55);
+        order.updateTotalPrice();
         order.setUserId("987654321");
         
         session.setAttribute("order", order);
@@ -106,10 +107,10 @@ public class OrderDBManager {
         }
     }
     
-    public ArrayList<Order> getOrders() throws SQLException {
-        // TODO: get orders by user id
-        String ordersSql = "SELECT * FROM ORDERS ORDER BY DATE DESC";
+    public ArrayList<Order> getOrders(String userId) throws SQLException {
+        String ordersSql = "SELECT * FROM ORDERS WHERE USERID = ? ORDER BY DATE DESC ";
         PreparedStatement getOrders = conn.prepareStatement(ordersSql);
+        getOrders.setString(1, userId);
         
         ArrayList<Order> orders = new ArrayList();
         ResultSet resultSet = getOrders.executeQuery();

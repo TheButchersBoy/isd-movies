@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import uts.isd.model.Movie;
 import uts.isd.model.Order;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.OrderDBManager;
@@ -120,15 +121,31 @@ public class OrderServlet extends HttpServlet {
     private void saveOrder(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDBManager orderDBManager = (OrderDBManager)session.getAttribute("orderDBManager");
+        String userId = "987654321"; // TODO: get userId from session
             
         Order order = (Order)session.getAttribute("order");
         
         if (order.getMovies().size() > 0) {
-            orderDBManager.addOrder(order.getUserId(), order.getMovies(), order.getTotalPrice());
+            boolean containsOutOfStockMovie = false;
+            
+            for (Movie movie: order.getMovies()) {
+                if (movie.getStock() < 1) {
+                    containsOutOfStockMovie = true;
+                }
+            }
+            
+            if (!containsOutOfStockMovie) {
+                orderDBManager.addOrder(userId, order.getMovies(), order.getTotalPrice());
 
-            session.setAttribute("order", new Order());
+                session.setAttribute("order", new Order());
 
-            response.sendRedirect("orderHistory.jsp");
+                response.sendRedirect("orderHistory.jsp");
+            } else {
+                session.setAttribute("outOfStockError", "error");
+                
+                response.sendRedirect("order.jsp");
+            }
+            
         } else {
             session.setAttribute("saveOrderError", "error");
             response.sendRedirect("order.jsp");
@@ -199,8 +216,9 @@ public class OrderServlet extends HttpServlet {
     
     private void getOrders(HttpServletRequest request) throws SQLException, ParseException {
         HttpSession session = request.getSession();
+        String userId = "987654321"; // TODO: get userID from session
         
-        ArrayList<Order> orders = manager.getOrders();
+        ArrayList<Order> orders = manager.getOrders(userId);
         String orderIdFilter = request.getParameter("orderId");
         String dateFromFilter = request.getParameter("dateFrom");
         String dateToFilter = request.getParameter("dateTo");
@@ -229,5 +247,6 @@ public class OrderServlet extends HttpServlet {
         session.removeAttribute("removeMovieErrorId");
         session.removeAttribute("cancelOrderErrorId");
         session.removeAttribute("removeMovieErrorId");
+        session.removeAttribute("outOfStockError");
     }
 }
