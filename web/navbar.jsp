@@ -57,8 +57,8 @@
                     </a>
                 </li>
                  <li>
-                    <a >
-                        <span class="glyphicon glyphicon-log-out"></span>
+                    <a href="UserServlet?action=logout">
+                        <span class="glyphicon glyphicon-log-out">Logout</span>
                     </a>
                 </li>
             <%}%>

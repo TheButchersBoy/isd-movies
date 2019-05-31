@@ -15,14 +15,18 @@ public class Movie {
     private String title;
     private String description;
     private Double price;
+    private int stock;
+    private String genre;
     
     public Movie() {}
 
-    public Movie(String id, String title, String description, Double price) {
+    public Movie(String id, String title, String description, Double price, int stock, String genre) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
+        this.stock = stock;
+        this.genre = genre;
     }
 
     public String getId() {
@@ -55,6 +59,22 @@ public class Movie {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
     
 }
