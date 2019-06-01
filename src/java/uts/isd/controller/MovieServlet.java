@@ -215,7 +215,7 @@ byte[] movieImg = IOUtils.toByteArray(fileContent);
         
         
        if( movieDAO.addMovie(movie)){
-           response.sendRedirect("index.jsp"); 
+           response.sendRedirect("category"); 
        }else
        {
            response.sendRedirect("error.jsp");

@@ -95,7 +95,7 @@ public class UserServlet extends HttpServlet {
                 response.sendRedirect("loginWelcome.jsp");
             }
             else
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("category");
         }    
         catch (IOException theException) {
             System.out.println(theException);
@@ -122,7 +122,7 @@ public class UserServlet extends HttpServlet {
             String encodedPassword = encodePassword(password);
             manager.addUser(id, email, encodedPassword, firstName, lastName, mobile);
             session.setAttribute("user", user);
-            response.sendRedirect("index.jsp"); // Send to home
+            response.sendRedirect("category"); // Send to home
         } else {
             response.sendRedirect("register.jsp"); // Send to register
         }
@@ -137,7 +137,7 @@ public class UserServlet extends HttpServlet {
     
     private void logout(HttpServletResponse response, HttpSession session) throws IOException {
         session.invalidate();
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("category");
     }
     
     private void updateUserDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
