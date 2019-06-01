@@ -14,7 +14,6 @@ import uts.isd.model.dao.*;
 
 public class ConnServlet extends HttpServlet {
     private DBConnector db;
-    private DBManager manager;
     private Connection conn;
 
     @Override //Create and instance of DBConnector for the deployment session
@@ -26,16 +25,13 @@ public class ConnServlet extends HttpServlet {
         }
     }
     
-    @Override //Add the DBConnector, DBManager, Connection instances to the session
+    @Override //Add the DBConnector, Connection instances to the session
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");       
         HttpSession session = request.getSession();
         conn = db.openConnection();   
-        //TODO: don't need try catch yet
-        manager = new DBManager(conn); 
         session.setAttribute("db", db);
-        session.setAttribute("manager", manager);
         session.setAttribute("conn", conn);
     } 
 

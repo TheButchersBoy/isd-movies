@@ -3,7 +3,7 @@ package uts.isd.model;
 import java.io.Serializable;
 
 public class User implements Serializable{
-        
+    
     private String id;
     private String firstName;
     private String lastName;
@@ -14,7 +14,7 @@ public class User implements Serializable{
     public User() {
         super();
     }
-    
+
     public User(String id, String firstName, String lastName, String email, String password, String mobile) {
         super();
         this.id = id;
@@ -23,22 +23,6 @@ public class User implements Serializable{
         this.email = email;
         this.password = password;
         this.mobile = mobile;
-    }
-    
-    public void updateDetails(String firstName, String lastName, String email, String password, String mobile){
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.mobile = mobile;
-    }
-
-    public boolean matchID(String id){
-        return this.id.equals(id.trim());
-    }
-    
-    public boolean matchPassword(String password){
-        return this.password.equals(password.trim());
     }
     
     public String getId() {

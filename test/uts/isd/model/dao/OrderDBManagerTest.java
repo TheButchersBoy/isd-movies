@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,6 +31,7 @@ public class OrderDBManagerTest {
     private static DBConnector db;
     private static Connection conn;
     private static OrderDBManager manager;
+    private static String userId = "999999999";
     
     public OrderDBManagerTest() {
     }
@@ -65,6 +67,12 @@ public class OrderDBManagerTest {
     
     @After
     public void tearDown() {
+        try {
+            PreparedStatement deleteTestOrder = conn.prepareStatement("DELETE FROM ORDERS WHERE USERID = '" + userId + "'");
+            deleteTestOrder.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBManagerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -72,40 +80,65 @@ public class OrderDBManagerTest {
      */
     @Test
     public void testAddOrder() throws Exception {
-        String userId = "999999999";
         ArrayList<Movie> movies = new ArrayList();
         Double totalPrice = 10.0;
 
         manager.addOrder(userId, movies, totalPrice);
         
-        ArrayList<Order> orders = manager.getOrders();
+        ArrayList<Order> orders = manager.getOrders(userId);
         orders.removeIf(order -> !order.getUserId().equals(userId));
         Order expectedOrder = orders.get(0);
-        expectedOrder.getMovies().forEach(movie -> System.out.println("expected " + movie.getTitle()));
-        movies.forEach(movie -> System.out.println("movie " + movie.getTitle()));
         
         assertNotEquals(expectedOrder, null);
         assertEquals(expectedOrder.getUserId(), userId);
-        assertEquals(expectedOrder.getTotalPrice(), 10.0, 0.0);
-        
-        PreparedStatement deleteTestOrder = conn.prepareStatement("DELETE FROM ORDERS WHERE USERID = '999999999'");
-        deleteTestOrder.executeUpdate();
-        PreparedStatement deleteTestOrderMovie = conn.prepareStatement("DELETE FROM ORDER_MOVIE WHERE MOVIEID = '9999'");
-        deleteTestOrderMovie.executeUpdate();
     }
 
     /**
      * Test of getOrders method, of class OrderDBManager.
      */
-//    @Test
-//    public void testGetOrders() throws Exception {
-//        System.out.println("getOrders");
-//        OrderDBManager instance = null;
-//        ArrayList<Order> expResult = null;
-//        ArrayList<Order> result = instance.getOrders();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-    
+    @Test
+    public void testGetOrders() throws Exception {
+        manager.addOrder(userId, new ArrayList(), 10.0);
+        ArrayList<Order> orders = manager.getOrders(userId);
+        
+        assertEquals(orders.size(), 1);
+    }
+
+    /**
+     * Test of cancelOrder method, of class OrderDBManager.
+     */
+    @Test
+    public void testCancelOrder() throws Exception {
+        manager.addOrder(userId, new ArrayList(), 10.0);
+        ArrayList<Order> orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        Order order = orders.get(0);
+        
+        manager.cancelOrder(order.getId());
+        
+        orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        order = orders.get(0);
+        
+        assertEquals(order.getStatus(), "Cancelled");
+    }
+
+    /**
+     * Test of submitOrder method, of class OrderDBManager.
+     */
+    @Test
+    public void testSubmitOrder() throws Exception {
+        manager.addOrder(userId, new ArrayList(), 10.0);
+        ArrayList<Order> orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        Order order = orders.get(0);
+        
+        manager.submitOrder(order.getId());
+        
+        orders = manager.getOrders(userId);
+        orders.removeIf(_order -> !_order.getUserId().equals(userId));
+        order = orders.get(0);
+        
+        assertEquals(order.getStatus(), "Submitted");
+    }
 }

@@ -9,7 +9,8 @@ public class DBConnector {
     private String dbuser = "omsadmin";
     private String dbpass = "omsadmin";
     private String driver = "org.apache.derby.jdbc.ClientDriver";
-    private Connection connection;
+    static Connection connection;
+    static Connection con;
 
     public DBConnector() throws ClassNotFoundException, SQLException {
         Class.forName(driver);
@@ -18,8 +19,8 @@ public class DBConnector {
         System.out.println("Connected database successfully...");
     }
 
-    public Connection openConnection(){
-        return this.connection;
+    public static Connection openConnection(){
+        return DBConnector.connection;
     }
 
     public void closeConnection() throws SQLException {

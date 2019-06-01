@@ -33,7 +33,6 @@
             <br />
             <form action="UserServlet" method="post">        
                 <div class="form-group">              
-                    <!--TODO: Refactor table styling-->
                     <table class="table" style="width:50%">
                         <tr>
                             <td><label for="firstName">First name</td>                
@@ -88,7 +87,7 @@
                         <tr>
                             <td></td>
                             <td align="right">
-                                <input type="submit" class="btn btn-default" name="action" value="register"/>
+                                <input type="submit" class="btn btn-success" name="action" value="register"/>
                             </td>
                         </tr>
                     </table>

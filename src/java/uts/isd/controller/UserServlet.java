@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import uts.isd.Validator;
 import uts.isd.model.User;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.UserDBManager;
@@ -39,7 +38,7 @@ public class UserServlet extends HttpServlet {
         conn = db.openConnection();   
         manager = new UserDBManager(conn); 
         session.setAttribute("db", db);
-        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("userDBManager", manager);
         session.setAttribute("conn", conn);
         
         try {
@@ -53,23 +52,24 @@ public class UserServlet extends HttpServlet {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        // TODO: Close connection?
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+            throws ServletException, IOException{
+               
         HttpSession session = request.getSession();
         conn = db.openConnection();   
         manager = new UserDBManager(conn); 
         session.setAttribute("db", db);
-        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("userDBManager", manager);
         session.setAttribute("conn", conn);
                 
         try {
             String action = request.getParameter("action");
-            if("register".equals(action)) {
+            if("login".equals(action)) {
+                login(request, response);
+            } else if("register".equals(action)) {
                 registerUser(request, response);
             } else if("update".equals(action)){
                 updateUserDetails(request, response);
@@ -77,12 +77,33 @@ public class UserServlet extends HttpServlet {
         } catch (IOException | SQLException | ServletException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        // TODO: Close connection?
     }
     
+    void login(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException {
+        try{
+            String email = (String) request.getParameter("email");
+            String password = (String) request.getParameter("password");
+            String encodedPassword = encodePassword(password);
+            User user = manager.login(email, encodedPassword);
+            if(user.getEmail() != null) {
+                // Decode password
+                String decodedPassword = decodePassword(user.getPassword());
+                user.setPassword(decodedPassword);
+                HttpSession session = request.getSession(true);
+                session.setAttribute("user", user);
+                response.sendRedirect("loginWelcome.jsp");
+            }
+            else
+                response.sendRedirect("category");
+        }    
+        catch (IOException theException) {
+            System.out.println(theException);
+        }
+    }
+
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-        int key = (new Random()).nextInt(999999); // TODO: Refactor, don't just have random
+        int key = (new Random()).nextInt(999999);
         String id = "" + key; 
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
@@ -96,11 +117,12 @@ public class UserServlet extends HttpServlet {
         session.setAttribute("mobileFormVal", mobile);
         User user = new User(id, firstName, lastName, email, password, mobile);
         
-        if (validateUser(user, session)) {
+        Validator validator = new Validator();
+        if (validator.validateUser(user, true, session, manager)) {
             String encodedPassword = encodePassword(password);
             manager.addUser(id, email, encodedPassword, firstName, lastName, mobile);
             session.setAttribute("user", user);
-            response.sendRedirect("index.jsp"); // Send to home
+            response.sendRedirect("category"); // Send to home
         } else {
             response.sendRedirect("register.jsp"); // Send to register
         }
@@ -115,7 +137,7 @@ public class UserServlet extends HttpServlet {
     
     private void logout(HttpServletResponse response, HttpSession session) throws IOException {
         session.invalidate();
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("category");
     }
     
     private void updateUserDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException { 
@@ -131,59 +153,15 @@ public class UserServlet extends HttpServlet {
         String mobile = request.getParameter("mobile");
         User updatedUser = new User(id, firstName, lastName, email, password, mobile);
         
-        if (validateUser(updatedUser, session)) {
+        Validator validator = new Validator();
+        if (validator.validateUser(updatedUser, false, session, manager)) {
             session.setAttribute("user", updatedUser);
             manager.updateUser(id, email, firstName, lastName, mobile);
             session.setAttribute("showUpdateBanner", "show");
         } else {
             session.setAttribute("showUpdateBanner", null);
         }
-        // Send to user details page
-        response.sendRedirect("userDetails.jsp");
-    }
-    
-    private boolean validateUser(User user, HttpSession session) throws SQLException {
-        Validator validator = new Validator();
-        boolean inputsValid = true;
-                
-        if (!validator.validateName(user.getFirstName())) {
-            session.setAttribute("firstNameError", "Name must be alphabetical");
-            inputsValid = false;
-        } else {
-            session.setAttribute("firstNameError", null);
-        }
-        
-        if (!validator.validateName(user.getLastName())) {
-            session.setAttribute("lastNameError", "Name must be alphabetical");
-            inputsValid = false;
-        } else {
-            session.setAttribute("lastNameError", null);
-        }
-
-        if (!validator.validateEmail(user.getEmail())) {
-            session.setAttribute("emailError", "Must be a valid email. Eg. example@example.com");
-            inputsValid = false;
-        } else if (manager.doesUserExist(user.getEmail())){
-            session.setAttribute("emailError", "Email already registered");
-            inputsValid = false;
-        } else {
-            session.setAttribute("emailError", null);
-        }
-
-        if (!validator.validateMobile(user.getMobile())) { // TODO: Add mobile
-            session.setAttribute("mobileError", "Mobile must be between 8 and 15 numbers");
-            inputsValid = false;
-        } else {
-            session.setAttribute("mobileError", null);
-        }
-        
-        if (inputsValid == false || !validator.validatePassword(user.getPassword())) {
-            session.setAttribute("passwordError", "Password must be alphanumeric and over 8 characters");
-            inputsValid = false;
-        } else {
-            session.setAttribute("passwordError", null);
-        }
-        return inputsValid;
+        response.sendRedirect("userDetails.jsp"); // Send to user details page
     }
     
     private String encodePassword(String password) {

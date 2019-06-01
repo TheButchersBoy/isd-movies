@@ -3,6 +3,8 @@ package uts.isd.model.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.Random;
+import uts.isd.model.User;
 
 public class UserDBManager {
     private Connection conn;
@@ -11,7 +13,41 @@ public class UserDBManager {
         this.conn = conn;
     }
     
-    public boolean doesUserExist(String email ) throws SQLException {
+    public User login(String email, String password) throws SQLException {
+        String sql = "select * from USERS where email = ? AND password = ? ";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, email);
+        stmt.setString(2, password);
+        ResultSet resultSet = stmt.executeQuery();
+        User user = new User();
+        while(resultSet.next()) {
+            user.setId(resultSet.getString("ID"));
+            user.setEmail(resultSet.getString("EMAIL"));
+            user.setPassword(resultSet.getString("PASSWORD"));
+            user.setFirstName(resultSet.getString("FIRST_NAME"));
+            user.setLastName(resultSet.getString("LAST_NAME"));
+            user.setMobile(resultSet.getString("MOBILE"));
+        
+            String sesSql = "INSERT INTO USERSESSIONS(ID, USERID, DATE) " + "VALUES (?,?,?)";
+            PreparedStatement addSessions = conn.prepareStatement(sesSql);
+
+            int rdmNo = (new Random()).nextInt(9999);
+            String id = Integer.toString(rdmNo);
+
+            addSessions.setString(1, id);
+            addSessions.setString(2, user.getId());
+            addSessions.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+            addSessions.executeUpdate();
+        }
+        // clean up
+        stmt.close();
+        return user;
+    }
+    
+    /* 
+    * Check if email is already used by another account
+    */
+    public boolean doesUserExist(String email) throws SQLException {
         boolean userExists = false;
         String sql = "SELECT EMAIL FROM USERS WHERE EMAIL = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -27,6 +63,27 @@ public class UserDBManager {
         resultSet.close(); 
         stmt.close();
         return userExists;
+    }
+    
+    public User getUserById(String id) throws SQLException {
+        String sql = "SELECT * FROM USERS WHERE ID = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, id);
+        
+        ResultSet resultSet = stmt.executeQuery();
+        User user = new User();
+        while(resultSet.next()) {
+            user.setId(id);
+            user.setEmail(resultSet.getString("EMAIL"));
+            user.setPassword(resultSet.getString("PASSWORD"));
+            user.setFirstName(resultSet.getString("FIRST_NAME"));
+            user.setLastName(resultSet.getString("LAST_NAME"));
+            user.setMobile(resultSet.getString("MOBILE"));
+        }
+        // clean up
+        resultSet.close(); 
+        stmt.close();
+        return user;
     }
     
     public void addUser(String id, String email, String password, 
