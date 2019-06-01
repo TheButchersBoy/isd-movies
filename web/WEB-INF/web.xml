@@ -9,6 +9,10 @@
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet>
+        <servlet-name>Paymentservlet</servlet-name>
+        <servlet-class>uts.isd.controller.Paymentservlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>uts.isd.controller.UserServlet</servlet-class>
     </servlet>
@@ -33,6 +37,10 @@
     <servlet-mapping>
         <servlet-name>ConnServlet</servlet-name>
         <url-pattern>/ConnServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Paymentservlet</servlet-name>
+        <url-pattern>/Paymentservlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>

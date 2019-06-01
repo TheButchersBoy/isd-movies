@@ -40,6 +40,11 @@
                     </a>
                 </li>
             <%} else {%>
+                <li class="payment">
+                    <a id="paymenttext" href="payment-details.jsp">
+                        <span class="glyphicon glyphicon-user"> Payment</span>
+                    </a>
+                </li>
                 <li class="orderhistory">
                     <a href="orderHistory.jsp">
                         <span class="glyphicon glyphicon-list"> OrderHistory</span>
