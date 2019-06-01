@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
-import javax.servlet.http.HttpSession;
 import uts.isd.model.Movie;
 import uts.isd.model.Order;
 
@@ -27,30 +26,6 @@ public class OrderDBManager {
     // Initialises the order db manager
     public OrderDBManager(Connection conn) throws SQLException {
         this.conn = conn;
-    }
-    
-    public void initialiseOrder(HttpSession session) {
-        // Mock
-        Order order = new Order();
-        ArrayList<Movie> movies = new ArrayList();
-
-//        movies.add(new Movie("1001", "The Avengers", "", 40.55, 50, "Action"));
-//        movies.add(new Movie("1002", "Antman", "", 20.0, 35, "Action"));
-//        movies.add(new Movie("1003", "Titanic", "", 15.0, 0, "Drama"));
-
-        order.setMovies(movies);
-        order.updateTotalPrice();
-        order.setUserId("987654321");
-        
-        session.setAttribute("order", order);
-//        if (session.getAttribute("order") == null) {
-//            Order order = new Order();
-//            
-//            order.setTotalPrice(0.0);
-//            order.setUserId("987654321"); // TODO: get user id from session
-//            
-//            session.setAttribute("order", order);
-//        }
     }
     
     // Adds an order to the db

@@ -12,6 +12,7 @@
 <%@page import="java.util.List"%>
 <%@page import="uts.isd.model.Movie"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
@@ -79,11 +80,19 @@
                         </div>
                     </a>
                    <br>
-                   Title: <%=movie.getTitle()%>, Price: $<%=movie.getPrice()%>,Genre:<%=movie.getGenre()%>
+                   Title: <%=movie.getTitle()%>, Price: $<%=movie.getPrice()%>, Genre: <%=movie.getGenre() %>, Stock: <%=movie.getStock()%>
                    <br>
-                   <a href=""> Add to Cart </a>
-                   
-                   
+                   <form action="OrderServlet" method="post" style="display: flex; margin: 0; margin-top: 1rem">
+                        <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                        <input type="hidden" name="movieTitle" value="<%= movie.getTitle() %>">
+                        <input type="hidden" name="moviePrice" value="<%= movie.getPrice() %>">
+                        <input type="hidden" name="movieStock" value="<%= movie.getStock() %>">
+                        <input type="submit" class="btn btn-primary" name="action" value="Add Movie">
+                    </form>
+                    <% String movieAddedErrorId = (String)session.getAttribute("movieAddedErrorId"); %>
+                    <c:if test="<%= movieAddedErrorId != null && movieAddedErrorId.equals(movie.getId()) %>">
+                        <p style="color: red; flex-grow: 1">Movie already added. Cannot add duplicate movies.</p>
+                    </c:if>
                 </div> 
                 
                 

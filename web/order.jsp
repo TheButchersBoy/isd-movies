@@ -32,7 +32,8 @@
                             <li class="list-group-item" style="display: flex;">
                                 <div style="flex-grow: 1">
                                     <h4><%= movie.getTitle() %></h4>
-                                    <p>$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                    <p style="margin-bottom: 0">$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                    <p>Stock: <%= movie.getStock() %></p>
                                 </div>
                                 <form action="OrderServlet" method="post" style="display: flex; align-items: center; margin-bottom: 0">
                                     <input type="hidden" name="movieId" value="<%= movie.getId() %>">
@@ -49,7 +50,7 @@
                             <p style="flex-grow: 1">Total price</p>
                             <p>$<%= String.format("%.2f", order.getTotalPrice()) %></p>
                         </div>
-                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; margin: 0">
+                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; align-items: center; margin: 0">
                             <c:if test="<%= saveOrderError != null %>">
                                 <p style="color: red; flex-grow: 1">Unable to save order with no movies. Please add movie(s) to your order.</p>
                             </c:if>

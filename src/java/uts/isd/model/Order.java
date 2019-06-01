@@ -16,7 +16,7 @@ public class Order {
     
     private String id;
     private String userId;
-    private ArrayList<Movie> movies;
+    private ArrayList<Movie> movies = new ArrayList();
     private Double totalPrice = 0.0;
     private Date date;
     private String status;

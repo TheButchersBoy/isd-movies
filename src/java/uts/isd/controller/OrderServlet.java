@@ -60,9 +60,7 @@ public class OrderServlet extends HttpServlet {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        if (session.getAttribute("order") == null) {
-            manager.initialiseOrder(session);
-        }
+        initialiseOrder(session);
         
         try {
             getOrders(request);
@@ -221,21 +219,34 @@ public class OrderServlet extends HttpServlet {
     }
     
     // Adds a movie into the order in session
-    private void addMovieToOrderSession(HttpServletRequest request, HttpServletResponse response) {
+    private void addMovieToOrderSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
+        initialiseOrder(session);
         Order order = (Order)session.getAttribute("order");
+        
         String movieId = request.getParameter("movieId");
         String movieTitle = request.getParameter("movieTitle");
-        String moviePrice = request.getParameter("moviePrice");
-        String movieStock = request.getParameter("movieStock");
-        Movie movie = new Movie();
+        double moviePrice = Double.parseDouble(request.getParameter("moviePrice"));
+        int movieStock = Integer.parseInt(request.getParameter("movieStock"));
+        Movie movieToAdd = new Movie(movieId, movieTitle, "", 0, "", movieStock, moviePrice, null);
         
-        order.addMovie(movie);
-        order.updateTotalPrice();
+        boolean isMoviePreviouslyAdded = false;
         
-        session.setAttribute("order", order);
+        for (Movie movie: order.getMovies()) {
+            if (movie.getId().equals(movieId)) {
+                isMoviePreviouslyAdded = true;
+            }
+        }
         
-        // TODO: send redirect to movies page
+        if (isMoviePreviouslyAdded) {
+            session.setAttribute("movieAddedErrorId", movieId);
+        } else {
+            order.addMovie(movieToAdd);
+            order.updateTotalPrice();
+            session.setAttribute("order", order);
+        }
+        
+        response.sendRedirect("category");
     }
     
     // Removes a movie from the order in session
@@ -289,5 +300,12 @@ public class OrderServlet extends HttpServlet {
         session.removeAttribute("removeMovieErrorId");
         session.removeAttribute("outOfStockError");
         session.removeAttribute("noUserError");
+        session.removeAttribute("movieAddedErrorId");
+    }
+    
+    private void initialiseOrder(HttpSession session) {
+        if (session.getAttribute("order") == null) {
+            session.setAttribute("order", new Order());
+        }
     }
 }
