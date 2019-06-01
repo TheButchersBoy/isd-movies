@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import uts.isd.Validator;
 import uts.isd.model.User;
 import uts.isd.model.dao.DBConnector;
 import uts.isd.model.dao.UserDBManager;
@@ -39,7 +38,7 @@ public class UserServlet extends HttpServlet {
         conn = db.openConnection();   
         manager = new UserDBManager(conn); 
         session.setAttribute("db", db);
-        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("userDBManager", manager);
         session.setAttribute("conn", conn);
         
         try {
@@ -52,6 +51,7 @@ public class UserServlet extends HttpServlet {
         } catch (IOException | SQLException ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
     @Override
@@ -62,7 +62,7 @@ public class UserServlet extends HttpServlet {
         conn = db.openConnection();   
         manager = new UserDBManager(conn); 
         session.setAttribute("db", db);
-        session.setAttribute("userUserDBManager", manager);
+        session.setAttribute("userDBManager", manager);
         session.setAttribute("conn", conn);
                 
         try {
