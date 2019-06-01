@@ -22,28 +22,6 @@ public class DBConnector {
     public static Connection openConnection(){
         return DBConnector.connection;
     }
-    
-     public static Connection getConnection()
-      {
-         try
-         {
-            String url = "jdbc:derby://localhost:1527/movieDB"; 
-            Class.forName("org.apache.derby.jdbc.ClientDriver");            
-            try
-            {            	
-               con = DriverManager.getConnection(url,"omsadmin","omsadmin"); 
-            }           
-            catch (SQLException ex)
-            {
-               ex.printStackTrace();
-            }
-         }
-         catch(ClassNotFoundException e)
-         {
-            System.out.println(e);
-         }
-      return con;
-}
 
     public void closeConnection() throws SQLException {
         this.connection.close();

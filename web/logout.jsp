@@ -16,7 +16,7 @@
             session.invalidate(); 
         %>
         <h1>You have successfully logged out!</h1>
-        <button class="button" type="button" onclick="location.href = 'index.jsp'" > Back Home </button>
+        <button class="button" type="button" onclick="location.href = 'category'" > Back Home </button>
     </body>
     <%@include file="footer.jsp" %>
 </html>

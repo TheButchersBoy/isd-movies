@@ -9,15 +9,20 @@ import uts.isd.model.dao.UserDBManager;
 
 public class Validator {
 
-    private final String namePattern = "[a-zA-Z]{1,49}";
-    private final String emailPattern = "^\\w{1,19}@[a-zA-Z_]{1,19}\\.[a-zA-Z]{2,9}$";
-    private final String passwordPattern = "[a-zA-Z0-9]{8,49}";
-    private final String mobilePattern = "[0-9]{8,15}";
+    // NAME: alphabetical, < 50 character
+    // EMAIL: email structure, < 50 character
+    // PASSWORD: alphanumeric, 8 - 49 characters
+    // MOBILE: numeric, < 16 characters
+    private final String namePattern = "[a-zA-Z]{1,49}";  
+    private final String emailPattern = "^\\w{1,19}@[a-zA-Z_]{1,19}\\.[a-zA-Z]{2,9}$";  
+    private final String passwordPattern = "[a-zA-Z0-9]{8,49}";         
+    private final String mobilePattern = "[0-9]{8,15}";                                 
 
     public Validator() {
     }
     
-    // Validate all user fields against regex patterns and set session errors accordingly   
+    // Validate all user fields against regex patterns 
+    // and set session errors accordingly   
     public boolean validateUser(User user, boolean isNewUser, HttpSession session, UserDBManager manager) throws SQLException {
         boolean inputsValid = true;
         
@@ -53,7 +58,7 @@ public class Validator {
         }
         
         // validate password as false if any other inputs are invalid 
-        // as a password input will not be filled on form load
+        // as a password field will not be pre-populated when a form is loaded.
         if (isNewUser && (inputsValid == false || !validatePassword(user.getPassword()))) {
             session.setAttribute("passwordError", "Password must be alphanumeric and over 8 characters");
             inputsValid = false;

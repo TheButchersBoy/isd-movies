@@ -32,6 +32,9 @@ public class UserDBManager {
         return user;
     }
     
+    /* 
+    * Check if email is already used by another account
+    */
     public boolean doesUserExist(String email) throws SQLException {
         boolean userExists = false;
         String sql = "SELECT EMAIL FROM USERS WHERE EMAIL = ?";
@@ -65,6 +68,9 @@ public class UserDBManager {
             user.setLastName(resultSet.getString("LAST_NAME"));
             user.setMobile(resultSet.getString("MOBILE"));
         }
+        // clean up
+        resultSet.close(); 
+        stmt.close();
         return user;
     }
     

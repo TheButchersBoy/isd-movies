@@ -41,7 +41,7 @@ public class SessionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        conn = db.getConnection();
+        conn = db.openConnection();
         session.setAttribute("db", db);
         session.setAttribute("conn", conn);
         
