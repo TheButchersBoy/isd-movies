@@ -24,6 +24,11 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <%if (userNav == null) {%>
+                <li class="order">
+                    <a href="order.jsp">
+                        <span class="glyphicon glyphicon-shopping-cart"> Cart</span>
+                    </a>
+                </li>
                 <li>
                     <a href="register.jsp">
                         <span class="glyphicon glyphicon-user"> Register</span>
