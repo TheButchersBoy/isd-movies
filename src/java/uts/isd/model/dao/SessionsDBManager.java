@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uts.isd.model.dao;
 
 import java.sql.Connection;
@@ -14,6 +9,7 @@ import uts.isd.model.Session;
 import java.util.Date;
 import java.util.Random;
 import javax.servlet.http.HttpSession;
+import uts.isd.model.Sessions;
 /**
  *
  * @author Kyle Zeng
@@ -26,42 +22,57 @@ public class SessionsDBManager {
     }
     
     public void initialiseSessions(HttpSession session) {
+        Sessions sessions = new Sessions();
+        ArrayList<Session> sessionList = new ArrayList();
+        sessionList.add(new Session("1","123", new java.sql.Date(new Date().getTime())));
         
-        ArrayList<Session> sessions = new ArrayList();
-        sessions.add(new Session("1", new java.sql.Date(new Date().getTime())));
-        
+        sessions.setSessions(sessionList);
+        sessions.setUserId("987654321");
         session.setAttribute("sessions", sessions);
     }
     
-    public void addSessions(ArrayList<Session> sessions) throws SQLException {
-        for (Session session : sessions){   
-            String sql = "INSERT INTO USERSESSIONS(ID, DATE) " + "VALUES (?,?)";
-            PreparedStatement addSessions = conn.prepareStatement(sql);
-            int rdmNo = (new Random()).nextInt(9999);
-            String id = Integer.toString(rdmNo);
-            
-            addSessions.setString(1, id);
-            addSessions.setString(2, session.getId());
-            addSessions.setDate(3, new java.sql.Date(new Date().getTime()));
-            addSessions.executeUpdate();
-        }
-    }        
-        public ArrayList<Session> getSessions() throws SQLException {
-        String sessionSql = "SELECT * FROM USERSESSIONS BY DATE DESC";
-        PreparedStatement getSessions = conn.prepareStatement(sessionSql);
+    public void addSessions(String userId, ArrayList<Session> sessionList) throws SQLException {
+        String sql = "INSERT INTO USERSESSIONS(ID, USERID, DATE) " + "VALUES (?,?,?)";
+        PreparedStatement addSessions = conn.prepareStatement(sql);
         
-        ArrayList<Session> sessions = new ArrayList<Session>();
+        int rdmNo = (new Random()).nextInt(9999);
+        String id = Integer.toString(rdmNo);
+
+        addSessions.setString(1, id);
+        addSessions.setString(2, userId);
+        addSessions.setDate(3, new java.sql.Date(new Date().getTime()));
+        addSessions.executeUpdate();
+    }
+    
+    public void clearSessions(String userId) throws SQLException {
+        String clear = "DELETE FROM USERSESSIONS WHERE USERID = ?";
+        PreparedStatement clearSession = conn.prepareStatement(clear);
+        clearSession.setString(1, userId);
+        clearSession.executeUpdate();
+        System.out.println("15245642651");
+    }
+    
+    public ArrayList<Session> getSessions(String userId) throws SQLException {
+        String sessionSql = "SELECT * FROM USERSESSIONS WHERE USERID = ? ORDER BY DATE DESC";
+        PreparedStatement getSessions = conn.prepareStatement(sessionSql);
+        getSessions.setString(1,userId);
+        
+        ArrayList<Session> sessionList = new ArrayList();
         ResultSet rs = getSessions.executeQuery();
         
         while(rs.next()) {
             Session session = new Session();
             
             session.setId(rs.getString("ID"));
-            session.setDate(rs.getDate("DATE"));
-            
-            sessions.add(session);
+            session.setUserId(rs.getString("USERID"));
+            session.setDate(rs.getDate("DATE"));            
+            sessionList.add(session);
         }
-        return sessions;
+        return sessionList;
     }
-}
+
+}    
+        
+    
+
 

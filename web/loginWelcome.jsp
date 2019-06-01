@@ -21,7 +21,6 @@
             <div style="text-align: center">
                 <button style="font-size: 150%" class="btn btn-primary" type="button" onclick="location.href = 'category'" > Return Home </button>
                 <button style="font-size: 150%" class="btn btn-primary" type="button" onclick="location.href = 'userProfile.jsp'" > Profile Page </button>
-                <button style="font-size: 150%" class="btn btn-primary" type="button" onclick="location.href = 'logout.jsp'" > Logout </button>
             </div>
         </div>
     </body>

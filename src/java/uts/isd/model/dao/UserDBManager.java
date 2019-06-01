@@ -3,6 +3,7 @@ package uts.isd.model.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.Random;
 import uts.isd.model.User;
 
 public class UserDBManager {
@@ -26,6 +27,17 @@ public class UserDBManager {
             user.setFirstName(resultSet.getString("FIRST_NAME"));
             user.setLastName(resultSet.getString("LAST_NAME"));
             user.setMobile(resultSet.getString("MOBILE"));
+        
+            String sesSql = "INSERT INTO USERSESSIONS(ID, USERID, DATE) " + "VALUES (?,?,?)";
+            PreparedStatement addSessions = conn.prepareStatement(sesSql);
+
+            int rdmNo = (new Random()).nextInt(9999);
+            String id = Integer.toString(rdmNo);
+
+            addSessions.setString(1, id);
+            addSessions.setString(2, user.getId());
+            addSessions.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
+            addSessions.executeUpdate();
         }
         // clean up
         stmt.close();

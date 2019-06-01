@@ -12,20 +12,22 @@ import java.util.ArrayList;
  * @author Kyle Zeng
  */
 public class Sessions {
-    private ArrayList<Session> sessions;
+    private ArrayList<Session> sessionList;
     private String userId;
     
-    public Sessions (ArrayList<Session> sessions, String userId) {
-        this.sessions = sessions;
+    public Sessions() {}
+    
+    public Sessions (ArrayList<Session> sessionList, String userId) {
+        this.sessionList = sessionList;
         this.userId = userId;
     }
-    
+
     public ArrayList<Session> getSessions() {
-        return sessions;
+        return sessionList;
     }
     
-    public void setSessions(ArrayList<Session> sessions) {
-        this.sessions = sessions;
+    public void setSessions(ArrayList<Session> sessionList) {
+        this.sessionList = sessionList;
     }
     
     public String getUserId() {
