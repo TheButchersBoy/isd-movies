@@ -1,4 +1,4 @@
-package uts.isd;
+package uts.isd.controller;
 
 import java.sql.SQLException;
 import java.util.regex.Matcher;
@@ -45,7 +45,7 @@ public class Validator {
             session.setAttribute("emailError", null);
         }
 
-        if (!validateMobile(user.getMobile())) { // TODO: Add mobile
+        if (!validateMobile(user.getMobile())) {
             session.setAttribute("mobileError", "Mobile must be between 8 and 15 numbers");
             inputsValid = false;
         } else {
