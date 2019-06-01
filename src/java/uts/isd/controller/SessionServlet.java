@@ -125,6 +125,9 @@ public class SessionServlet extends HttpServlet {
                 manager.clearSessions(ses.getUserId());
                 response.sendRedirect("userProfile.jsp");
             }
+            if (ses.getUserId() == null){
+                response.sendRedirect("userProfile.jsp");
+            }
         }
     }
         
