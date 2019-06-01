@@ -155,7 +155,6 @@ public class Paymentservlet extends HttpServlet {
             Date dateTo = dateFormat.parse(dateToFilter);
             payments.removeIf(order -> order.getDate().after(dateTo));
         }
-        System.out.println("****** " + payments.get(0).getMethod());
         session.setAttribute("payments", payments);
     }
 }
