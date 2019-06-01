@@ -33,7 +33,6 @@
             <br />
             <form action="UserServlet" method="post">        
                 <div class="form-group">              
-                    <!--TODO: Refactor table styling-->
                     <table class="table" style="width:50%">
                         <tr>
                             <td><label for="firstName">First name</td>                

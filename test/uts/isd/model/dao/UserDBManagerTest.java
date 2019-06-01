@@ -108,7 +108,7 @@ public class UserDBManagerTest {
         assertEquals(doesUserExist, true);
         // delete user
         manager.deleteUser(userId);
-        // check user does exist
+        // check user does not exist
         doesUserExist = manager.doesUserExist(userEmail);
         assertEquals(doesUserExist, false);
     }
