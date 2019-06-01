@@ -11,13 +11,10 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <li>
-                <a class="navbar-brand" href="index.jsp">ISD Movies</a>
+                <a class="navbar-brand" href="category">ISD Movies</a>
             </li>
         </div>
         <ul class="nav navbar-nav">
-            <li class="categories">
-                <a class="navbar-texts" href="category">Movie Category</a>     
-            </li>
             <li class="search">
                 <a class="navbar-texts" href="search.jsp">Search Movie</a>
             </li>
