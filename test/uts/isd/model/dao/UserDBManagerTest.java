@@ -3,7 +3,6 @@ package uts.isd.model.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -20,6 +19,7 @@ public class UserDBManagerTest {
     private static Connection conn;
     private static UserDBManager manager;
     private static String userId = "999999999";
+    private static String userEmail = "nathan@test.com";
     
     public UserDBManagerTest() {
     }
@@ -52,6 +52,7 @@ public class UserDBManagerTest {
     @After
     public void tearDown() {
         try {
+            // Delete test user
             PreparedStatement deleteTestUser = conn.prepareStatement("DELETE FROM USERS WHERE ID = '" + userId + "'");
             deleteTestUser.executeUpdate();
         } catch (SQLException ex) {
@@ -59,37 +60,56 @@ public class UserDBManagerTest {
         }
     }
 
+    /**
+     * Test of addUser method, of class UserDBManager.
+     */
     @Test
     public void testAddUser() throws Exception { 
-        String email = "nathan@test.com";
         // check user does not exist
-        boolean doesUserExist = manager.doesUserExist(email);
+        boolean doesUserExist = manager.doesUserExist(userEmail);
         assertEquals(doesUserExist, false);
         // add user
-        manager.addUser("999999999", "nathan@test.com", "Password1", "Nathan", "Carr", "0455455455");
+        manager.addUser(userId, userEmail, "Password1", "Nathan", "Carr", "0455455455");
         // check user does exist
-        doesUserExist = manager.doesUserExist(email);
+        doesUserExist = manager.doesUserExist(userEmail);
         assertEquals(doesUserExist, true);
     }
     
+    /**
+     * Test of updateUser method, of class UserDBManager.
+     */
     @Test
     public void testUpdateUser() throws Exception { 
-        String id = "999999999";
         // add new user
-        manager.addUser(id, "nathan@test.com", "Password1", "Nathan", "Carr", "0455455455");
-        
-        String email = "test@test.com";
-        String firstName = "Chester";
-        String lastName = "Jim";
-        String mobile = "0411411411";
+        manager.addUser(userId, userEmail, "Password1", "Nathan", "Carr", "0455455455");
+        String newEmail = "test@test.com";
+        String newFirstName = "Chester";
+        String newLastName = "Jim";
+        String newMobile = "0411411411";
         // update user details
-        manager.updateUser(id, email, firstName, lastName, mobile);
-        
+        manager.updateUser(userId, newEmail, newFirstName, newLastName, newMobile);        
         // check details are updated
-        User user = manager.getUserById(id);
-        assertEquals(user.getEmail(), email);
-        assertEquals(user.getFirstName(), firstName);
-        assertEquals(user.getLastName(), lastName);
-        assertEquals(user.getMobile(), mobile);
+        User user = manager.getUserById(userId);
+        assertEquals(user.getEmail(), newEmail);
+        assertEquals(user.getFirstName(), newFirstName);
+        assertEquals(user.getLastName(), newLastName);
+        assertEquals(user.getMobile(), newMobile);
+    }
+    
+    /**
+     * Test of deleteUser method, of class UserDBManager.
+     */
+    @Test
+    public void testDeleteUser() throws Exception { 
+        // add user
+        manager.addUser(userId, userEmail, "Password1", "Nathan", "Carr", "0455455455");
+        // check does exist
+        boolean doesUserExist = manager.doesUserExist(userEmail);
+        assertEquals(doesUserExist, true);
+        // delete user
+        manager.deleteUser(userId);
+        // check user does exist
+        doesUserExist = manager.doesUserExist(userEmail);
+        assertEquals(doesUserExist, false);
     }
 }
