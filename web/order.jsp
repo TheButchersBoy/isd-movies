@@ -20,12 +20,9 @@
             Order order = (Order)session.getAttribute("order");
             String saveOrderError = (String)session.getAttribute("saveOrderError");
             String outOfStockError = (String)session.getAttribute("outOfStockError");
+            String noUserError = (String)session.getAttribute("noUserError");
         %>
         <div style="display: flex; flex-direction: column; padding-left: 4rem; padding-right: 4rem">
-            <!--temporary-->
-            <div>
-                
-            </div>
             <h1 style="margin-bottom: 4rem">Your Order</h1>
             <div style="display: flex">
                 <div style="width: 50%; margin-right: 4rem">
@@ -35,7 +32,8 @@
                             <li class="list-group-item" style="display: flex;">
                                 <div style="flex-grow: 1">
                                     <h4><%= movie.getTitle() %></h4>
-                                    <p>$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                    <p style="margin-bottom: 0">$<%= String.format("%.2f", movie.getPrice()) %></p>
+                                    <p>Stock: <%= movie.getStock() %></p>
                                 </div>
                                 <form action="OrderServlet" method="post" style="display: flex; align-items: center; margin-bottom: 0">
                                     <input type="hidden" name="movieId" value="<%= movie.getId() %>">
@@ -52,12 +50,15 @@
                             <p style="flex-grow: 1">Total price</p>
                             <p>$<%= String.format("%.2f", order.getTotalPrice()) %></p>
                         </div>
-                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; margin: 0">
+                        <form action="OrderServlet" method="post" style="display: flex; justify-content: flex-end; align-items: center; margin: 0">
                             <c:if test="<%= saveOrderError != null %>">
                                 <p style="color: red; flex-grow: 1">Unable to save order with no movies. Please add movie(s) to your order.</p>
                             </c:if>
-                                <c:if test="<%= outOfStockError != null %>">
+                            <c:if test="<%= outOfStockError != null %>">
                                 <p style="color: red; flex-grow: 1">Order contains out of stock movie(s). Please remove out of stock movie(s) before saving order.</p>
+                            </c:if>
+                            <c:if test="<%= noUserError != null %>">
+                                <p style="color: red; flex-grow: 1">Please login before saving an order.</p>
                             </c:if>
                             <input type="submit" class="btn btn-danger" style="margin-right: 1rem" name="action" value="Clear">
                             <input type="submit" class="btn btn-primary" name="action" value="Save">

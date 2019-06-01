@@ -44,7 +44,7 @@ public class UserDBManager {
         return user;
     }
     
-    public boolean doesUserExist(String email ) throws SQLException {
+    public boolean doesUserExist(String email) throws SQLException {
         boolean userExists = false;
         String sql = "SELECT EMAIL FROM USERS WHERE EMAIL = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -60,6 +60,24 @@ public class UserDBManager {
         resultSet.close(); 
         stmt.close();
         return userExists;
+    }
+    
+    public User getUserById(String id) throws SQLException {
+        String sql = "SELECT * FROM USERS WHERE ID = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, id);
+        
+        ResultSet resultSet = stmt.executeQuery();
+        User user = new User();
+        while(resultSet.next()) {
+            user.setId(id);
+            user.setEmail(resultSet.getString("EMAIL"));
+            user.setPassword(resultSet.getString("PASSWORD"));
+            user.setFirstName(resultSet.getString("FIRST_NAME"));
+            user.setLastName(resultSet.getString("LAST_NAME"));
+            user.setMobile(resultSet.getString("MOBILE"));
+        }
+        return user;
     }
     
     public void addUser(String id, String email, String password, 

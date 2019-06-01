@@ -27,11 +27,11 @@ public class DBConnector {
       {
          try
          {
-            String url = "jdbc:derby://localhost:1527/omsdatabase"; 
+            String url = "jdbc:derby://localhost:1527/movieDB"; 
             Class.forName("org.apache.derby.jdbc.ClientDriver");            
             try
             {            	
-               con = DriverManager.getConnection(url,"username","password"); 
+               con = DriverManager.getConnection(url,"omsadmin","omsadmin"); 
             }           
             catch (SQLException ex)
             {
